@@ -1,0 +1,35 @@
+.menu-item {
+    width: 100%;
+    height: 40px;
+    display: flex;
+
+    .indicator {
+        width: 3px;
+        height: 100%;
+    }
+
+    &:focus {
+        .indicator {
+            background-color: rgb(209, 133, 133);
+        }
+    }   
+
+    &.active {
+        .indicator {
+            width: 3px;
+            height: 100%;
+            background-color: rgb(209, 133, 133);
+        }
+    }
+
+    .icon {
+        width: 20px;
+        height: 100%;
+    }
+
+    .text {
+        font-size: 14px;
+        height: 100%;
+        line-height: 40px;
+    }
+}
