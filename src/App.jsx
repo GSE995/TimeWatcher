@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import Menu from './components/Menu/Menu'
-import TimerPage from './pages/Timer/'
+import TimerPage from './pages/Timer/Timer'
 import './App.scss'
 
 class App extends Component {
