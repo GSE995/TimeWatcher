@@ -1,0 +1,41 @@
+.timer-header {
+    height: 66px;
+    display: flex;
+    box-shadow: rgba(0, 0, 0, 0.13) 0px 2px 6px 0px;
+    margin-bottom: 20px;
+
+    .search-field-wrapper {
+        height: 100%;
+        flex-grow: 1;
+        padding-left: 10px;
+    
+        .search-timer-field {
+            height: 100%;
+            padding: 0;
+            margin: 0;
+            width: 100%;
+            border:none;
+            font-family: 'Roboto', sans-serif;
+            font-size: 1.2em;
+            &:focus {
+                outline: none;
+            }
+        }
+    }
+
+    .timer-tool {
+        width: 300px;
+        display: flex;
+        justify-content: right;
+        .timer-value {
+            width: 80px
+        }
+
+        .toggle-view-state {
+   
+        }
+    }
+}
+
+
+
