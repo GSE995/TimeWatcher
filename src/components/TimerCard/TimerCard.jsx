@@ -1,40 +1,30 @@
-import React, {Component} from 'react'
+import React, {useState, useEffect} from 'react'
 import './TimerCard.scss'
 
-class TimerCard extends Component {
+function TimerCard(props){
+    let [timer, setTimer] = useState(props.timer)
 
-    constructor(props){
-        super(props)
-        this.state = {
-            timer: Object.assign({}, this.props.timer),
-            isActive: false
-        } 
-    }
+    useEffect(() => setTimer(props.timer), [timer])
 
-    render(prop){
-        let timerOptions = {hour: 'numeric', minute: 'numeric', second: 'numeric'}
-        return (
-            <div className="timer-card">
-                <button>group</button>
-                <input  value={this.state.timer.name}
-                        onChange={this.onChangeTimerName}/>
-                <button>project</button>
-                <div className="spacer"></div>
-                <div className="timer-date">date</div>
-                <div className="timer-value">{this.state.timer.value.toLocaleString("ru", timerOptions)}</div>
-                <button onClick={this.activeTimer}>play</button>
-                <button>actions</button>
-            </div>
-        )
+    function updateTimerName(value){
+        timer.name = value
+        setTimer(Object.assign({}, timer))
     }
 
-    onChangeTimerName = (e) => {
-        this.setState({ name: e.target.value})
-    }
-    
-    activeTimer = (e) => {
-        this.props.continueTimer(Object.assign(this.state.timer))
-    }
+    let timerOptions = {hour: 'numeric', minute: 'numeric', second: 'numeric'}
+    return (
+        <div className="timer-card">
+            <button>group</button>
+            <input  value={timer.name}
+                    onChange={(e) => updateTimerName(e.target.value)}/>
+            <button>project</button>
+            <div className="spacer"></div>
+            <div className="timer-date">date</div>
+            <div className="timer-value">{timer.value.toLocaleString("ru", timerOptions)}</div>
+            <button onClick={() => props.continueTimer(timer)}>play</button>
+            <button>actions</button>
+        </div>
+    )
 }
 
 export default TimerCard
