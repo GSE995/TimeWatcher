@@ -1,5 +1,7 @@
 import React, {Component} from 'react'
+import Timer from '../../models/Timer'
 import './TimerHeader.scss'
+
 
 class TimerHeader extends Component {
 
@@ -8,16 +10,16 @@ class TimerHeader extends Component {
         this.state = {
             viewState: 1,
             inProccess: false,
-            timer: this.props.activeTimer || {value: new Date(2019, 1, 1, 0, 0, 0), name: ''}
+            timer: new Timer()
         }
     }
 
     timerID = null
 
     static getDerivedStateFromProps(props, state) {
-        if (props.activeTimer && state.timer !== props.activeTimer) {
+        if (props.activeTimer && state.timer.id !== props.activeTimer.id) {
             return {
-                timer: Object.assign({}, props.activeTimer)
+                timer: props.activeTimer
             }
         }
         return null;
@@ -69,7 +71,7 @@ class TimerHeader extends Component {
     }
 
     breakTimer = (e) => {        
-        let timer = Object.assign({}, this.state.timer)
+        let timer = this.state.timer
         this.resetTimer()
         this.addTimerNote(timer)
     }
@@ -78,10 +80,7 @@ class TimerHeader extends Component {
         clearInterval(this.timerID)
         this.setState({
             inProccess: false,
-            timer: {
-                value: new Date(2019, 1, 1, 0, 0, 0),
-                name: ''
-            }
+            timer: new Timer()
         })
     }
 
@@ -105,7 +104,7 @@ class TimerHeader extends Component {
     }
 
     addTimerNote(timer){
-        this.props.onAddTimer(timer)
+        this.props.onChangeTimer(timer)
     }
 }
 
