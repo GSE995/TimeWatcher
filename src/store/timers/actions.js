@@ -2,6 +2,8 @@ import TimerService from  '../../services/TimersService'
 
 const FETCH_TIMERS = 'FETCH_TIMERS'
 const TIMER_LOADING = 'TIMER_LOADING'
+const CHANGE_TIMER = 'CHANGE_TIMER'
+const REMOVE_TIMER = 'REMOVE_TIMER'
 
 const getTimers = (pageSize) => {
     return async (dispatch) => {
@@ -29,4 +31,4 @@ const getTimers = (pageSize) => {
             })
         }   
     }
-}
+} 
