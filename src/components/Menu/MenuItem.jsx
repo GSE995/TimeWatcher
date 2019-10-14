@@ -1,12 +1,15 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import './MenuItem.scss'
 
-function MenuItem({menuItem}) {
+function MenuItem({item}) {
     return (
         <li className="menu-item">
-            <div className="indicator"></div>
-            <div className={'icon ' + menuItem.icon}></div>
-            <div className="text">{menuItem.text}</div>
+            <Link to={item.path}>
+                <div className="indicator"></div>
+                <div className={'icon ' + item.icon}></div>
+                <div className="text">{item.text}</div>
+            </Link>
         </li>
     )
 }

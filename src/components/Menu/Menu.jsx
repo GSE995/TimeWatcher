@@ -12,13 +12,20 @@ class Menu extends Component {
         let menuItems = [
             {
                 id: 1,
-                text: 'first',
-                icon: 'first'
+                text: 'Home',
+                icon: 'Home',
+                path: '/'
+            },
+            {
+                id: 2,
+                text: 'Timer',
+                icon: 'timer',
+                path: '/timer'
             }
         ]
 
         const itemList = menuItems.map((item, index) => {
-            return <MenuItem key={item.id} menuItem={item}/>
+            return <MenuItem key={item.id} item={item}/>
         })
         
         return (

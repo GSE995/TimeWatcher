@@ -1,12 +1,17 @@
 import React from 'react'
 import {render} from 'react-dom'
-import { createStore, applyMiddleware, combineReducers } from 'redux';
-import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
+import { createStore, applyMiddleware, combineReducers } from 'redux'
+import { Provider } from 'react-redux'
+import thunk from 'redux-thunk'
 import App from './App'
-import * as reducers from './store/reducers';
+import reducers from './store/timers/reducer'
+import { BrowserRouter } from 'react-router-dom';
 
-const store = createStore(combineReducers(reducers), applyMiddleware(thunk));
+const store = createStore(reducers, applyMiddleware(thunk));
 
 
-render(<Provider store={store}><App/></Provider>, document.getElementById('root'))
+render(
+    (<BrowserRouter>
+        <Provider store={store}><App/></Provider>
+    </BrowserRouter>), 
+    document.getElementById('root'))
