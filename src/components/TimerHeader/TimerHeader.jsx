@@ -1,111 +1,117 @@
-import React, {Component} from 'react'
+import React, {Component, useState, useEffect, useRef} from 'react'
 import Timer from '../../models/Timer'
 import './TimerHeader.scss'
+import {useSelector, useDispatch} from 'react-redux'
+import {addTimer } from '../../store/timers/actions'
 
-
-class TimerHeader extends Component {
-
-    constructor(prop){
-        super(prop)
-        this.state = {
-            viewState: 1,
-            inProccess: false,
-            timer: new Timer()
+function useTick(callback, delay) {
+    const savedCallback = useRef();
+  
+    useEffect(() => {
+        savedCallback.current = callback;
+    });
+  
+    useEffect(() => {
+        function tick() {
+            savedCallback.current();
         }
-    }
+    
+        let id = setInterval(tick, 1000);
+        return () => clearInterval(id);
+    }, [delay]);
+}
 
-    timerID = null
+function TimerHeader(){
+    let timerOptions = {hour: 'numeric', minute: 'numeric', second: 'numeric'}
 
-    static getDerivedStateFromProps(props, state) {
-        if (props.activeTimer && state.timer.id !== props.activeTimer.id) {
-            return {
-                timer: props.activeTimer
-            }
-        }
-        return null;
-    }
+    // let activeTimer = useSelector(state => state.activeTimer)
+    let dispatch = useDispatch()
 
-    render(){
-        let timerOptions = {hour: 'numeric', minute: 'numeric', second: 'numeric'}
-        return (
-            <div className="timer-header">
-                <div className="search-field-wrapper">
-                    <input  className="search-timer-field" 
-                            placeholder="What are you working now?"
-                            value={this.state.timer.name}
-                            onChange={this.onChangeTimerName}/>
-                </div>
-                <div className="timer-tool">
-                    <button>Proj</button>
-                    <button>Tags</button>
-                    <button>Bill</button>
+    let [viewState, setViewState] = useState(0)
+    let [inProccess, setInProccess] = useState(false)
+    let [activeTimer, setActiveTimer] = useState(new Timer())
+    let [timerValue, setTimerValue] = useState(new Date(2019, 1, 1, 0, 0, 0))
+    let [timerID, setTimerID] = useState(null)
 
-                    <input  className="timer-value" 
-                            onChange={this.onChangeTimer} 
-                            value={this.state.timer.value.toLocaleString("ru", timerOptions)}/>
+    useEffect(() => {
+        
+    }, [inProccess])
 
-                    {this.state.inProccess ? <button onClick={this.breakTimer}>Stop</button>
-                                : <button onClick={this.startTimer}>Start</button>  }
-                                
-                   
-                    <div className="toggle-view-state">
-                        <button></button>
-                        <button></button>
-                    </div>
-                </div>
-            </div>
+    // function tick(timerValue){
+    //     let newValue = copyDate(timerValue)
+    //     newValue.setSeconds(timerValue.getSeconds() + 1)
+    //     setTimerValue(newValue)
+    // }
+
+    /**
+     * 
+     * @param {Date} date 
+     */
+    function copyDate(date){
+        return new Date(
+            date.getFullYear(),
+            date.getMonth(),
+            date.getDate(),
+            date.getHours(),
+            date.getMinutes(),
+            date.getSeconds()
         )
     }
 
-    componentDidUpdate(){
-        if (this.props.activeTimer && !this.state.inProccess && this.state.timer.name === this.props.activeTimer.name) {
-            this.startTimer()
-        }
+    function startTimer(timerValue){
+        setInProccess(true)
+        // let timerID = setInterval(() => (tick(timerValue)), 1000)
+        // setTimerID(timerID)
     }
+    
+    function stopTimer(){
+        dispatch(addTimer(activeTimer))
+        resetTimer()
+    }
+    
+    function resetTimer(){
+        clearInterval(timerID)
+        setInProccess(false)
+        setActiveTimer(new Timer())
+        setTimerValue(new Date(2019, 1, 1, 0, 0, 0))
+    }
+    
+    function onChangeTimerName(){
+        
+    }
+    
+    function onChangeTimerValue(){
+    
+    }
+    
+    return (
+        <div className="timer-header">
+            <div className="search-field-wrapper">
+                <input  className="search-timer-field" 
+                        placeholder="What are you working now?"
+                        value={activeTimer.name}
+                        onChange={onChangeTimerName}/>
+            </div>
+            <div className="timer-tool">
+                <button>Proj</button>
+                <button>Tags</button>
+                <button>Bill</button>
 
-    startTimer = (e) => {
-        this.setState({ inProccess: true })
-        this.timerID = setInterval(() => {
-            this.tick()
-        }, 1000)
-    }
+                <input  className="timer-value" 
+                        onChange={onChangeTimerValue} 
+                        value={timerValue.toLocaleString("ru", timerOptions)}/>
 
-    breakTimer = (e) => {        
-        let timer = this.state.timer
-        this.resetTimer()
-        this.addTimerNote(timer)
-    }
-
-    resetTimer(){
-        clearInterval(this.timerID)
-        this.setState({
-            inProccess: false,
-            timer: new Timer()
-        })
-    }
-
-    tick(){
-        this.state.timer.value.setSeconds(this.state.timer.value.getSeconds() + 1)
-        this.setState({
-            value: this.state.value
-        })
-    }
-
-    onChangeTimer = (e) => {
-        let timer = this.state.timer
-        timer.value =  e.target.value
-        this.setState({ timer })
-    }
-
-    onChangeTimerName = (e) => {
-        let timer = this.state.timer
-        timer.name = e.target.value
-        this.setState({ timer })
-    }
-
-    addTimerNote(timer){
-        this.props.onChangeTimer(timer)
-    }
+                {inProccess ? <button onClick={stopTimer}>Stop</button>
+                            : <button onClick={() => startTimer(timerValue)}>Start</button>  }
+                            
+               
+                <div className="toggle-view-state">
+                    <button></button>
+                    <button></button>
+                </div>
+            </div>
+        </div>
+    )
 }
 
 export default TimerHeader
