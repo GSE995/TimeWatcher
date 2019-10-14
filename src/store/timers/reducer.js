@@ -8,12 +8,12 @@ export default function reduce(state = initialState, {type, payload}) {
         case 'FETCH_TIMERS' :
             return {
                 ...state,
-                timers: [...state.timers]
+                timers: [...payload]
             }
         case 'ADD_TIMER' : 
             return {
                 ...state,
-                timers: [...state.timers, state.payload]
+                timers: [...state.timers, payload]
             }
         case 'CHANGE_TIMER' : 
             return {

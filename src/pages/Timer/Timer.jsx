@@ -1,12 +1,19 @@
 import React, {useState, useEffect} from 'react'
 import TimerHeader from '../../components/TimerHeader/TimerHeader'
 import TimerCard from '../../components/TimerCard/TimerCard'
+import {useSelector, useDispatch} from 'react-redux'
+import {fetchTimers } from '../../store/timers/actions'
 
 import './Timer.scss'
 
 function TimePage(){
-    let [timers, setTimers] = useState([])
-    
+    let dispatch = useDispatch()
+    let timers = useSelector(state => state.timers)
+
+    useEffect(() => {
+        dispatch(fetchTimers())
+    }, [])
+
     let timerCards = timers.map( el => <TimerCard timer={el} key={el.id} />)
 
     return  (
