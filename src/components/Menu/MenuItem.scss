@@ -3,6 +3,13 @@
     height: 40px;
     display: flex;
 
+    a {
+        text-decoration: none;
+        color: #fff;
+        width: 100%;
+        display: flex
+    }
+
     .indicator {
         width: 3px;
         height: 100%;
