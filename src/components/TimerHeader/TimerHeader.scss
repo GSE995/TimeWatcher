@@ -24,18 +24,28 @@
     }
 
     .timer-tool {
-        width: 300px;
         display: flex;
         justify-content: right;
-        .timer-value {
-            width: 80px
-        }
-
-        .toggle-view-state {
-   
-        }
+        margin-right: 20px;
     }
 }
+
+.timer-value-field {
+    height: 100%;
+    line-height: 66px;
+    margin-right: 10px;;
+}
+
+.timer-play-icon {
+    color: rgb(56, 156, 56);
+    font-size: 34px;
+}
+
+.timer-stop-btn {
+    color: rgb(212, 21, 21);
+    font-size: 34px;
+}
+
 
 
 

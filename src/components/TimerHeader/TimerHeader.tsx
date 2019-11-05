@@ -1,8 +1,10 @@
 import React, { Component, Dispatch } from 'react'
 import './TimerHeader.scss'
+import Button from '../Buttons/Button'
 import { addTimer } from '../../store/timers/actions'
 import { Project, Timer } from '../../models'
 import { connect } from 'react-redux'
+import { DisplayField } from '../Fields'
 
 interface IProps {
     projects: Array<Project>
@@ -11,54 +13,80 @@ interface IProps {
 }
 
 interface IState {
-    inProccess: boolean
     timerID: any
     timerValue: Date
     timerName: string
-    project: Project
+    project: Project | null
 }
 
 class TimerHeader extends Component<IProps, IState> {
     private timerNameRef: React.RefObject<HTMLInputElement>
-    private timerID!: NodeJS.Timer
 
     constructor(props: IProps) {
         super(props)
         this.timerNameRef = React.createRef<HTMLInputElement>()
+        this.state = {
+            timerID: null,
+            timerValue: new Date(2019, 1, 1, 0, 0, 0),
+            timerName: '',
+            project: null,
+        }
     }
 
     private tick = (): void => {
-        this.setState({})
+        this.setState({
+            timerValue: this.getNextTime(this.state.timerValue),
+        })
+    }
+
+    private getNextTime = (currentValue: Date) => {
+        return new Date(
+            currentValue.getFullYear(),
+            currentValue.getMonth(),
+            currentValue.getDate(),
+            currentValue.getHours(),
+            currentValue.getMinutes(),
+            currentValue.getSeconds() + 1
+        )
+    }
+
+    private getDefaultState = (): IState => {
+        return {
+            timerID: null,
+            timerValue: new Date(2019, 1, 1, 0, 0, 0),
+            timerName: '',
+            project: null,
+        }
     }
 
     public startTimer = (): void => {
         let timerID = setInterval(() => this.tick(), 1000)
 
         this.setState({
-            inProccess: true,
             timerID,
+            timerValue: this.getNextTime(this.state.timerValue),
         })
     }
 
     public stopTimer = (): void => {
         clearInterval(this.state.timerID)
         this.setState({
-            inProccess: false,
             timerID: null,
         })
+        this.addTimer()
     }
 
-    public addTimer = (timer: Timer): void => {
-        let timerName: string = this.timerNameRef.current
-            ? this.timerNameRef.current.value
-            : ''
-        timer.name = timerName
+    public addTimer = (): void => {
+        let timer = new Timer(this.state.timerName, this.state.timerValue)
         this.props.addTimer(timer)
+        this.setState(this.getDefaultState())
     }
 
-    public onChangeTimerName = () => {}
-
-    public onChangeTimerValue = () => {}
+    public onChangeTimerName = (e: any) => {
+        this.setState({
+            timerName: e.currentTarget.value,
+        })
+    }
 
     render() {
         let timerOptions = {
@@ -66,6 +94,10 @@ class TimerHeader extends Component<IProps, IState> {
             minute: 'numeric',
             second: 'numeric',
         }
+        let displayTimerValue = this.state.timerValue.toLocaleString(
+            'ru',
+            timerOptions
+        )
 
         return (
             <div className="timer-header">
@@ -78,29 +110,22 @@ class TimerHeader extends Component<IProps, IState> {
                     />
                 </div>
                 <div className="timer-tool">
-                    <button>Proj</button>
-                    <button>Tags</button>
-                    <button>Bill</button>
-
-                    <input
-                        className="timer-value"
-                        onChange={this.onChangeTimerValue}
-                        value={this.state.timerValue.toLocaleString(
-                            'ru',
-                            timerOptions
-                        )}
+                    <DisplayField
+                        text={displayTimerValue}
+                        className="timer-value-field"
                     />
 
-                    {this.state.inProccess ? (
-                        <button onClick={this.stopTimer}>Stop</button>
+                    {this.state.timerID ? (
+                        <Button
+                            handler={this.stopTimer}
+                            appendIconCls="fas fa-stop timer-stop-btn"
+                        />
                     ) : (
-                        <button onClick={this.startTimer}>Start</button>
+                        <Button
+                            handler={this.startTimer}
+                            appendIconCls="far fa-play-circle timer-play-icon"
+                        />
                     )}
-
-                    <div className="toggle-view-state">
-                        <button></button>
-                        <button></button>
-                    </div>
                 </div>
             </div>
         )
