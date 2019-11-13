@@ -1,145 +1,60 @@
-import TimerService from '../../services/TimersService'
+import * as t from './actionTypes'
 import Timer from '../../models/Timer'
-import { Dispatch } from 'redux'
 
-const FETCH_TIMERS = 'FETCH_TIMERS'
-const TIMER_LOADING = 'TIMER_LOADING'
-const CHANGE_TIMER = 'CHANGE_TIMER'
-const REMOVE_TIMER = 'REMOVE_TIMER'
-const TIMER_SAVING = 'TIMER_SAVING'
-const ADD_TIMER = 'ADD_TIMER'
-const CONTINUE_TIMER = 'CONTINUE_TIMER'
-
-function setLoading(payload: boolean) {
+function timerRequest() {
     return {
-        type: TIMER_LOADING,
-        payload,
+        type: t.TIMER_LOADING,
     }
 }
 
-function fetchTimersSuccess(timers: Timer[]) {
+function timerRequestFailure(error: any) {
     return {
-        type: FETCH_TIMERS,
+        type: t.TIMER_LOADING,
+        payload: error,
+    }
+}
+
+function fetchTimers(timers: Timer[]) {
+    return {
+        type: t.FETCH_TIMERS_SUCCESS,
         payload: timers,
     }
 }
 
-function fetchFailure() {
+function addTimer(timer: Timer) {
     return {
-        type: FETCH_TIMERS,
-        success: false,
-        msg: '',
+        type: t.ADD_TIMER,
+        payload: timer,
     }
 }
 
-function timerSaving(payload: boolean) {
+function changeTimer(timer: Timer) {
     return {
-        type: TIMER_SAVING,
-        payload: payload,
+        type: t.CHANGE_TIMER,
+        payload: timer,
     }
 }
 
-const fetchTimers = (pageSize: number) => {
-    return async (dispatch: Dispatch) => {
-        dispatch(setLoading(true))
-        try {
-            let { data, success } = await TimerService.getList()
-            dispatch(fetchTimersSuccess(data))
-        } catch (error) {
-            dispatch(fetchFailure())
-        } finally {
-            dispatch(setLoading(true))
-        }
+function changeActiveTimer(timer: Timer) {
+    return {
+        type: t.CHANGE_ACTIVE_TIMER,
+        payload: timer,
     }
 }
 
-const addTimer = (timer: Timer) => {
-    return async (dispatch: Dispatch) => {
-        dispatch(timerSaving(true))
-        try {
-            let { data } = await TimerService.create(timer)
-            dispatch({
-                type: ADD_TIMER,
-                payload: data,
-            })
-        } catch (error) {
-            dispatch({
-                type: FETCH_TIMERS,
-                payload: {
-                    success: false,
-                    msg: '',
-                },
-            })
-        } finally {
-            dispatch(timerSaving(false))
-        }
+function removeTimer(timerId: Number) {
+    return {
+        type: t.CHANGE_TIMER,
+        payload: timerId,
     }
 }
 
-const saveTimer = (timer: Timer) => {
-    return async (dispatch: Dispatch) => {
-        dispatch(timerSaving(true))
-        try {
-            let { data } = await TimerService.create(timer)
-            dispatch({
-                type: ADD_TIMER,
-                payload: data,
-            })
-        } catch (error) {
-            dispatch({
-                type: FETCH_TIMERS,
-                payload: {
-                    success: false,
-                    msg: '',
-                },
-            })
-        } finally {
-            dispatch(timerSaving(false))
-        }
-    }
+export {
+    timerRequest,
+    timerRequestFailure,
+    fetchTimers,
+    addTimer,
+    changeTimer,
+    changeActiveTimer,
+    removeTimer
 }
-
-const removeTimer = (timer: Timer) => {
-    return async (dispatch: Dispatch) => {
-        dispatch(timerSaving(true))
-        try {
-            let { data } = await TimerService.create(timer)
-            dispatch({
-                type: ADD_TIMER,
-                payload: data,
-            })
-        } catch (error) {
-            dispatch({
-                type: FETCH_TIMERS,
-                payload: false
-            })
-        } finally {
-            dispatch(timerSaving(false))
-        }
-    }
-}
-
-const continueTimer = (timer: Timer) => {
-    return async (dispatch: Dispatch) => {
-        dispatch(timerSaving(true))
-        try {
-            let { data } = await TimerService.create(timer)
-            dispatch({
-                type: CONTINUE_TIMER,
-                payload: data,
-            })
-        } catch (error) {
-            dispatch({
-                type: FETCH_TIMERS,
-                payload: {
-                    success: false,
-                    msg: '',
-                },
-            })
-        } finally {
-            dispatch(timerSaving(false))
-        }
-    }
-}
-
-export { fetchTimers, addTimer, saveTimer, continueTimer, removeTimer }

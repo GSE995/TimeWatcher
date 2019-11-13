@@ -1,8 +1,11 @@
 import { Timer } from '../../models'
+import * as t from './actionTypes'
 
 interface ITimerState {
     timers: Timer[]
     activeTimer: Timer | null
+    isLoading: boolean
+    errorMsg: string
 }
 
 interface IAction {
@@ -13,24 +16,29 @@ interface IAction {
 const initialState = {
     timers: [],
     activeTimer: null,
+    isLoading: false,
+    errorMsg: '',
 }
+
+export { initialState }
 
 export default function reduce(
     state: ITimerState = initialState,
     { type, payload }: IAction
 ) {
     switch (type) {
-        case 'FETCH_TIMERS':
+        case t.FETCH_TIMERS_SUCCESS:
             return {
                 ...state,
+                isLoading: false,
                 timers: [...payload],
             }
-        case 'ADD_TIMER':
+        case t.ADD_TIMER:
             return {
                 ...state,
                 timers: [...state.timers, payload],
             }
-        case 'CHANGE_TIMER':
+        case t.CHANGE_TIMER:
             return {
                 ...state,
                 timers: state.timers.map((timer) => {
@@ -40,17 +48,34 @@ export default function reduce(
                     return timer
                 }),
             }
-        case 'REMOVE_TIMER':
+        case t.REMOVE_TIMER:
             return {
                 ...state,
                 timers: state.timers.filter((timer) => timer.id !== payload),
             }
-        case 'TIMER_LOADING':
+        case t.TIMER_LOADING:
             return {
                 ...state,
                 isLoading: payload,
             }
-        case 'CONTINUE_TIMER':
+        case t.TIMER_FAILURE_REQUEST:
+            return {
+                ...state,
+                isLoading: false,
+                errorMsg: payload.errorMsg,
+            }
+        case t.ACTIVATE_TIMER:
+            return {
+                ...state,
+                activeTimer: payload,
+            }
+        case t.STOP_ACTIVE_TIMER:
+            return {
+                ...state,
+                activeTimer: null,
+                timers: [...state.timers, payload],
+            }
+        case t.CHANGE_ACTIVE_TIMER:
             return {
                 ...state,
                 activeTimer: payload,
