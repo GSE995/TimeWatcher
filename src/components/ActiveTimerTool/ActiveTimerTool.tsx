@@ -1,37 +1,42 @@
-import React, { Component, Dispatch } from 'react'
-import './TimerHeader.scss'
+import React, { Component } from 'react'
 import Button from '../Buttons/Button'
 import { addTimer } from '../../store/timers/actions'
 import { Project, Timer } from '../../models'
 import { connect } from 'react-redux'
 import { DisplayField } from '../Fields'
+import { StoreState } from  '../../store/'
 
-interface IProps {
-    projects: Array<Project>
+import './TimerHeader.scss'
+
+type ActiveTimerToolProps = {
     addTimer: Function
-    timerSaving: boolean
+    timerSaving: boolean,
+    activeTimer: Timer
 }
 
-interface IState {
+type ActiveTimerToolState = {
     timerID: any
     timerValue: Date
     timerName: string
-    project: Project | null
 }
 
-class TimerHeader extends Component<IProps, IState> {
-    private timerNameRef: React.RefObject<HTMLInputElement>
-
-    constructor(props: IProps) {
+class ActiveTimerTool extends Component<ActiveTimerToolProps, ActiveTimerToolState> {
+    private timerOptions: any = {
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+    }
+    constructor(props: ActiveTimerToolProps) {
         super(props)
-        this.timerNameRef = React.createRef<HTMLInputElement>()
+
         this.state = {
             timerID: null,
             timerValue: new Date(2019, 1, 1, 0, 0, 0),
             timerName: '',
             project: null,
         }
-    }
+        
+    }   
 
     private tick = (): void => {
         this.setState({
@@ -50,7 +55,7 @@ class TimerHeader extends Component<IProps, IState> {
         )
     }
 
-    private getDefaultState = (): IState => {
+    private getDefaultState = (): ActiveTimerToolState => {
         return {
             timerID: null,
             timerValue: new Date(2019, 1, 1, 0, 0, 0),
@@ -88,15 +93,17 @@ class TimerHeader extends Component<IProps, IState> {
         })
     }
 
-    render() {
-        let timerOptions = {
-            hour: 'numeric',
-            minute: 'numeric',
-            second: 'numeric',
+    shouldComponentUpdate(prevProps: ActiveTimerToolProps, prevState: ActiveTimerToolState){
+        if(this.props.activeTimer.id !== prevProps.activeTimer.id){
+            return true
         }
+        return false
+    }
+
+    render() {
         let displayTimerValue = this.state.timerValue.toLocaleString(
             'ru',
-            timerOptions
+            this.timerOptions
         )
 
         return (
@@ -132,9 +139,10 @@ class TimerHeader extends Component<IProps, IState> {
     }
 }
 
-const mapStateToProps = (state: any) => ({
-    timer: state.timer,
-    timerSaving: state.timerSaving,
+const mapStateToProps = (state: StoreState): ActiveTimerToolProps => ({
+    timerLoading: state.timer.isLoading,
+    activeTimer: state.timer.activeTimer,
+    timerError: state.timer.errorMsg
 })
 
 const mapDispatchToProps = (dispatch: any) => ({
@@ -144,4 +152,4 @@ const mapDispatchToProps = (dispatch: any) => ({
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(TimerHeader)
+)(ActiveTimerTool)
