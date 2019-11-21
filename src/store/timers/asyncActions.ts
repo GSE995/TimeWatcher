@@ -4,8 +4,7 @@ import { Dispatch } from 'redux'
 import * as actions from './actions'
 import PageSize from '../../models/PageSize'
 
-
-const fetchTimers = (pageSize: PageSize) : any => {
+const fetchTimers = (pageSize: PageSize): any => {
     return async (dispatch: Dispatch) => {
         dispatch(actions.timerRequest())
         try {
@@ -29,7 +28,7 @@ const addTimer = (timer: Timer): any => {
     }
 }
 
-const changeTimer = (timer: Timer) : any => {
+const changeTimer = (timer: Timer): any => {
     return async (dispatch: Dispatch) => {
         dispatch(actions.timerRequest())
         try {
@@ -41,7 +40,7 @@ const changeTimer = (timer: Timer) : any => {
     }
 }
 
-const removeTimer = (timer: Timer) : any => {
+const removeTimer = (timer: Timer): any => {
     return async (dispatch: Dispatch) => {
         dispatch(actions.timerRequest())
         try {
@@ -53,7 +52,7 @@ const removeTimer = (timer: Timer) : any => {
     }
 }
 
-const startTimer = (timer: Timer) : any => {
+const startTimer = (timer: Timer): any => {
     return async (dispatch: Dispatch) => {
         dispatch(actions.timerRequest())
         try {
@@ -64,7 +63,7 @@ const startTimer = (timer: Timer) : any => {
         }
     }
 }
-const changeActiveTimer = (timer: Timer) : any => {
+const changeActiveTimer = (timer: Timer): any => {
     return async (dispatch: Dispatch) => {
         dispatch(actions.timerRequest())
         try {

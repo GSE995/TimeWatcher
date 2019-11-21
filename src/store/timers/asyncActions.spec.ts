@@ -9,6 +9,7 @@ import { Timer } from '../../models'
 import * as asyncAction from './asyncActions'
 import * as actions from './actions'
 import * as t from './actionTypes'
+import PageSize from '../../models/PageSize'
 
 const mockStore = configureMockStore([thunk])
 
@@ -33,7 +34,7 @@ describe('AsyncActions testing', () => {
 
         const store = mockStore({})
 
-        return store.dispatch(asyncAction.fetchTimers(0)).then(() => {
+        return store.dispatch(asyncAction.fetchTimers(new PageSize(0, 10))).then(() => {
             expect(store.getActions()).toEqual(expectedActions)
         })
     })
