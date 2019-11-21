@@ -1,31 +1,28 @@
 import { Timer } from '../../models'
 import * as t from './actionTypes'
 
-interface ITimerState {
-    timers: Timer[]
-    activeTimer: Timer | null
-    isLoading: boolean
-    errorMsg: string
-}
-
-interface IAction {
+type TimerAction = {
     type: string
     payload: any
 }
 
 const initialState = {
-    timers: [],
-    activeTimer: null,
     isLoading: false,
     errorMsg: '',
+    timers: [],
+    activeTimer: null,
+}
+
+export type TimerState = {
+    timers: Timer[]
+    activeTimer?: Timer | null
+    isLoading: boolean
+    errorMsg: string
 }
 
 export { initialState }
 
-export default function reduce(
-    state: ITimerState = initialState,
-    { type, payload }: IAction
-) {
+export default ( state: TimerState = initialState, {type, payload}: TimerAction) : TimerState => {
     switch (type) {
         case t.FETCH_TIMERS_SUCCESS:
             return {
