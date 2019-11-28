@@ -10,12 +10,12 @@ const initialState = {
     isLoading: false,
     errorMsg: '',
     timers: [],
-    activeTimer: null,
+    activeTimer: new Timer(),
 }
 
 export type TimerState = {
     timers: Timer[]
-    activeTimer?: Timer | null
+    activeTimer: Timer
     isLoading: boolean
     errorMsg: string
 }
@@ -69,7 +69,7 @@ export default ( state: TimerState = initialState, {type, payload}: TimerAction)
         case t.STOP_ACTIVE_TIMER:
             return {
                 ...state,
-                activeTimer: null,
+                activeTimer: new Timer(),
                 timers: [...state.timers, payload],
             }
         case t.CHANGE_ACTIVE_TIMER:
