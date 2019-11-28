@@ -20,6 +20,7 @@ export default function Button(props: IProps) {
             onClick={props.handler}
             style={props.style}
             disabled={props.disabled}
+            className={props.className}
         >
             <i className={props.appendIconCls}></i>
             {props.children}
