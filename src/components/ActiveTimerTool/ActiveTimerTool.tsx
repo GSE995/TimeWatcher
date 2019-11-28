@@ -1,17 +1,17 @@
 import React, { Component } from 'react'
 import Button from '../Buttons/Button'
 import { addTimer } from '../../store/timers/actions'
-import { Project, Timer } from '../../models'
+import { Timer } from '../../models'
 import { connect } from 'react-redux'
 import { DisplayField } from '../Fields'
 import { StoreState } from  '../../store/'
 
-import './TimerHeader.scss'
+import './ActiveTimerTool.scss'
 
 type ActiveTimerToolProps = {
     addTimer: Function
-    timerSaving: boolean,
-    activeTimer: Timer
+    activeTimer: Timer,
+    timerLoading: Boolean
 }
 
 type ActiveTimerToolState = {
@@ -32,8 +32,7 @@ class ActiveTimerTool extends Component<ActiveTimerToolProps, ActiveTimerToolSta
         this.state = {
             timerID: null,
             timerValue: new Date(2019, 1, 1, 0, 0, 0),
-            timerName: '',
-            project: null,
+            timerName: ''
         }
         
     }   
@@ -59,8 +58,7 @@ class ActiveTimerTool extends Component<ActiveTimerToolProps, ActiveTimerToolSta
         return {
             timerID: null,
             timerValue: new Date(2019, 1, 1, 0, 0, 0),
-            timerName: '',
-            project: null,
+            timerName: ''
         }
     }
 
@@ -82,7 +80,7 @@ class ActiveTimerTool extends Component<ActiveTimerToolProps, ActiveTimerToolSta
     }
 
     public addTimer = (): void => {
-        let timer = new Timer(this.state.timerName, this.state.timerValue)
+        let timer = new Timer('')
         this.props.addTimer(timer)
         this.setState(this.getDefaultState())
     }
@@ -139,13 +137,12 @@ class ActiveTimerTool extends Component<ActiveTimerToolProps, ActiveTimerToolSta
     }
 }
 
-const mapStateToProps = (state: StoreState): ActiveTimerToolProps => ({
+const mapStateToProps = (state: StoreState): Omit<ActiveTimerToolProps, 'addTimer'> => ({
     timerLoading: state.timer.isLoading,
-    activeTimer: state.timer.activeTimer,
-    timerError: state.timer.errorMsg
+    activeTimer: state.timer.activeTimer
 })
 
-const mapDispatchToProps = (dispatch: any) => ({
+const mapDispatchToProps = (dispatch: any): Omit<ActiveTimerToolProps, 'timerLoading' | 'activeTimer'> => ({
     addTimer: (timer: Timer) => dispatch(addTimer(timer)),
 })
 
