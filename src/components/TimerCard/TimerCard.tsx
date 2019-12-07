@@ -1,22 +1,75 @@
 import React, { Component } from 'react'
 import { Timer } from '../../models'
 import { connect } from 'react-redux'
-import { DisplayField, TextField } from '../Fields'
-import Button from '../Buttons/Button'
+import styled from 'styled-components'
 
 import * as asyncActions from '../../store/timers/asyncActions'
 
-import './TimerCard.scss'
+const hoverCardBackground = 'rgb(248, 247, 247)'
+
+const TimerCardContent = styled.div`
+    display: flex;
+    width: 100%;
+    height: 40px;
+`
+
+const Spacer = styled.div`
+    flex-grow: 1;
+    ${TimerCardContent}:hover & {
+        background-color: ${hoverCardBackground};
+    }
+`
+
+const TimerNameField = styled.input`
+    border-width: 0;
+    outline-width: 0;
+    width: 50%;
+    padding-left: 10px;
+    ${TimerCardContent}:hover & {
+        background-color: ${hoverCardBackground};
+    }
+`
+
+const PlayButton = styled.button`
+    padding-right: 20px;
+    ${TimerCardContent}:hover & {
+        background-color: ${hoverCardBackground};
+    }
+`
+
+const TimerValue = styled.div`
+    font-size: 16px;
+    padding-right: 20px;
+    height: 100%;
+    line-height: 38px;
+    ${TimerCardContent}:hover & {
+        background-color: ${hoverCardBackground};
+    }
+`
+
+const Icon = styled.i((props: any) => ({
+    'font-size': props.size,
+    color: props.color,
+}))
 
 type TimerCardProps = {
     startTimer: Function
     removeTimer: Function
     changeTimer: Function
-    timer: Timer 
+    timer: Timer
 }
 
 type TimerCardState = {
     timer: Timer
+}
+
+function useDisplayTimer(value: Date) {
+    let timerOptions = {
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+    }
+    return value.toLocaleString('ru', timerOptions)
 }
 
 class TimerCard extends Component<TimerCardProps, TimerCardState> {
@@ -36,34 +89,24 @@ class TimerCard extends Component<TimerCardProps, TimerCardState> {
     }
 
     render() {
-        let timerOptions = {
-            hour: 'numeric',
-            minute: 'numeric',
-            second: 'numeric',
-        }
-        let displayTimerValue = this.state.timer.value.toLocaleString(
-            'ru',
-            timerOptions
-        )
+        let displayTimerValue = useDisplayTimer(this.state.timer.value)
+        let playHandler = () => this.props.startTimer(this.state.timer)
+
         return (
-            <div className="timer-card">
-                <input
-                    type="text"
+            <TimerCardContent>
+                <TimerNameField
                     value={this.state.timer.name}
                     onChange={this.updateTimerName}
-                    className="timer-name"
                 />
-                <div className="spacer"></div>
-                <DisplayField
-                    text={displayTimerValue}
-                    className="timer-value"
-                />
-                <Button
-                    handler={() => this.props.startTimer(this.state.timer)}
-                    appendIconCls="fas fa-play continue-timer-icon"
-                    className="continue-timer-btn"
-                />
-            </div>
+                <Spacer />
+                <TimerValue>{displayTimerValue}</TimerValue>
+                <PlayButton onClick={playHandler}>
+                    <Icon
+                        className="fas fa-play"
+                        color="rgb(56, 156, 56)"
+                    />
+                </PlayButton>
+            </TimerCardContent>
         )
     }
 }
@@ -71,7 +114,6 @@ class TimerCard extends Component<TimerCardProps, TimerCardState> {
 const mapDispatchToProps = (dispatch: any) => ({
     changeTimer: (timer: Timer) => dispatch(asyncActions.changeTimer(timer)),
     removeTimer: (timer: Timer) => dispatch(asyncActions.removeTimer(timer)),
-    startTimer: (timer: Timer) => dispatch(asyncActions.startTimer(timer)),
 })
 
 export default connect(null, mapDispatchToProps)(TimerCard)
