@@ -1,16 +1,59 @@
 import React, { Component } from 'react'
-import Button from '../Buttons/Button'
 import { addTimer } from '../../store/timers/actions'
 import { Timer } from '../../models'
 import { connect } from 'react-redux'
-import { DisplayField } from '../Fields'
-import { StoreState } from  '../../store/'
+import { AppState } from '../../store/'
+import styled from 'styled-components'
 
-import './ActiveTimerTool.scss'
+const Wrapper = styled.div`
+    height: 66px;
+    display: flex;
+    box-shadow: rgba(0, 0, 0, 0.13) 0px 2px 6px 0px;
+    margin-bottom: 20px;
+`
+
+const TimerActions = styled.div`
+    display: flex;
+    justify-content: right;
+    margin-right: 20px;
+`
+
+const TimerNameWrapper = styled.div`
+    height: 100%;
+    flex-grow: 1;
+    padding-left: 10px;
+`
+
+const TimerNameField = styled.input`
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    border: none;
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.2em;
+    &:focus {
+        outline: none;
+    }
+`
+
+const Icon = styled.i((props: any) => ({
+    'font-size': props.size,
+    color: props.color,
+}))
+
+const TimerValue = styled.div`
+    height: 100%;
+    line-height: 66px;
+    margin-right: 10px;
+    font-size: 1.5em;
+`
+
+const TriggerButton = styled.button``
 
 type ActiveTimerToolProps = {
     addTimer: Function
-    activeTimer: Timer,
+    activeTimer: Timer
     timerLoading: Boolean
 }
 
@@ -20,7 +63,10 @@ type ActiveTimerToolState = {
     timerName: string
 }
 
-class ActiveTimerTool extends Component<ActiveTimerToolProps, ActiveTimerToolState> {
+class ActiveTimerTool extends Component<
+    ActiveTimerToolProps,
+    ActiveTimerToolState
+> {
     private timerOptions: any = {
         hour: 'numeric',
         minute: 'numeric',
@@ -32,10 +78,9 @@ class ActiveTimerTool extends Component<ActiveTimerToolProps, ActiveTimerToolSta
         this.state = {
             timerID: null,
             timerValue: new Date(2019, 1, 1, 0, 0, 0),
-            timerName: ''
+            timerName: '',
         }
-        
-    }   
+    }
 
     private tick = (): void => {
         this.setState({
@@ -58,7 +103,7 @@ class ActiveTimerTool extends Component<ActiveTimerToolProps, ActiveTimerToolSta
         return {
             timerID: null,
             timerValue: new Date(2019, 1, 1, 0, 0, 0),
-            timerName: ''
+            timerName: '',
         }
     }
 
@@ -91,62 +136,59 @@ class ActiveTimerTool extends Component<ActiveTimerToolProps, ActiveTimerToolSta
         })
     }
 
-    shouldComponentUpdate(prevProps: ActiveTimerToolProps, prevState: ActiveTimerToolState){
-        if(this.props.activeTimer.id !== prevProps.activeTimer.id){
-            return true
-        }
-        return false
-    }
-
     render() {
         let displayTimerValue = this.state.timerValue.toLocaleString(
             'ru',
             this.timerOptions
         )
 
+        const triggerButtonHandler = this.state.timerID
+            ? this.stopTimer
+            : this.startTimer
+
+        const triggerIcon = this.state.timerID
+            ? {
+                  className: 'fas fa-stop',
+                  color: 'rgb(212, 21, 21)',
+                  size: '2.5em',
+              }
+            : {
+                  className: 'far fa-play-circle',
+                  color: 'rgb(56, 156, 56)',
+                  size: '2.5em',
+              }
+
         return (
-            <div className="timer-header">
-                <div className="search-field-wrapper">
-                    <input
-                        className="search-timer-field"
+            <Wrapper>
+                <TimerNameWrapper>
+                    <TimerNameField
                         placeholder="What are you working now?"
-                        value={this.state.timerName}
+                        value={this.props.activeTimer.name}
                         onChange={this.onChangeTimerName}
                     />
-                </div>
-                <div className="timer-tool">
-                    <DisplayField
-                        text={displayTimerValue}
-                        className="timer-value-field"
-                    />
-
-                    {this.state.timerID ? (
-                        <Button
-                            handler={this.stopTimer}
-                            appendIconCls="fas fa-stop timer-stop-btn"
-                        />
-                    ) : (
-                        <Button
-                            handler={this.startTimer}
-                            appendIconCls="far fa-play-circle timer-play-icon"
-                        />
-                    )}
-                </div>
-            </div>
+                </TimerNameWrapper>
+                <TimerActions>
+                    <TimerValue >{displayTimerValue}</TimerValue>
+                    <TriggerButton onClick={triggerButtonHandler}>
+                        <Icon {...triggerIcon} />
+                    </TriggerButton>
+                </TimerActions>
+            </Wrapper>
         )
     }
 }
 
-const mapStateToProps = (state: StoreState): Omit<ActiveTimerToolProps, 'addTimer'> => ({
+const mapStateToProps = (
+    state: AppState
+): Omit<ActiveTimerToolProps, 'addTimer'> => ({
     timerLoading: state.timer.isLoading,
-    activeTimer: state.timer.activeTimer
+    activeTimer: state.timer.activeTimer,
 })
 
-const mapDispatchToProps = (dispatch: any): Omit<ActiveTimerToolProps, 'timerLoading' | 'activeTimer'> => ({
+const mapDispatchToProps = (
+    dispatch: any
+): Omit<ActiveTimerToolProps, 'timerLoading' | 'activeTimer'> => ({
     addTimer: (timer: Timer) => dispatch(addTimer(timer)),
 })
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(ActiveTimerTool)
+export default connect(mapStateToProps, mapDispatchToProps)(ActiveTimerTool)
