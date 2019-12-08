@@ -1,31 +1,49 @@
-import React, {useState, useEffect} from 'react'
-import ActiveTimerTool from '../../components/ActiveTimerTool/ActiveTimerTool'
-import TimerCard from '../../components/TimerCard/TimerCard'
-import {useSelector, useDispatch} from 'react-redux'
-import {fetchTimers } from '../../store/timers/asyncActions'
-import { Timer } from '../../models'
+import React, { useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { fetchTimers } from '../../store/timers/asyncActions'
 
-import './Timer.scss'
-import PageSize from '../../models/PageSize'
+import { AppState } from '../../store/index'
+import { startTimer } from '../../store/timers/asyncActions'
 
-function TimePage(){
+import { TimerCard, ActiveTimerTool } from '../../components'
+import { Timer, PageSize } from '../../models'
+
+function useTimers(pageSize: PageSize) {
     let dispatch = useDispatch()
-    let timers = useSelector((state: any) => state.timers)
+    let timers = useSelector((state: any) => state.timer.timers)
 
     useEffect(() => {
-        dispatch(fetchTimers(new PageSize(0, 10)))
+        dispatch(fetchTimers(pageSize))
     }, [])
 
-    let timerCards = timers.map( (el: Timer) => <TimerCard timer={el} key={el.id} />)
+    return timers
+}
 
-    return  (
-        <div className="timer-page">
+function useActiveTimer() {
+    return useSelector((state: AppState) => state.timer.activeTimer)
+}
+
+function getTimerCards(timers: Timer[], onStartTimer: Function) {
+    return timers.map((el: Timer) => (
+        <TimerCard timer={el} key={el.id} startTimer={onStartTimer} />
+    ))
+}
+
+const TimerPage = () => {
+    let dispatch = useDispatch()
+    let timers = useTimers(new PageSize(0, 10))
+    let activeTimer = useActiveTimer()
+
+    function onStartTimer(timer: Timer) {
+        dispatch(startTimer(timer, activeTimer))
+    }
+
+    return (
+        <div>
             <ActiveTimerTool />
-            <div className="timer-card-container">
-                {timerCards}
-            </div>
+            {getTimerCards(timers, onStartTimer)}
         </div>
     )
 }
 
-export default TimePage
+export default TimerPage
