@@ -9,13 +9,22 @@ type MenuProps = {
 
 const Ul = styled.ul`
     margin: 0;
-    padding: 0
+    padding: 0;
 `
 
-function Menu({routes}: MenuProps) {
-    const items = routes.map(item => <MenuItem key={item.id} item={item} />)
+const Nav = styled.nav`
+    width: 180px;
+    height: 100%;
+    background-color: rgb(68, 65, 65);
+`
 
-    return <Ul>{items}</Ul>
+function Menu({ routes }: MenuProps) {
+    const items = routes.map((item) => <MenuItem key={item.id} item={item} />)
+    return (
+        <Nav>
+            <Ul>{items}</Ul>
+        </Nav>
+    )
 }
 
 export default Menu
