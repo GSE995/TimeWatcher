@@ -1,5 +1,7 @@
 import * as t from './actionTypes'
 import Timer from '../../models/Timer'
+import ListResult from '../../models/ListResult'
+
 
 function timerRequest() {
     return {
@@ -14,10 +16,10 @@ function timerRequestFailure(error: any) {
     }
 }
 
-function fetchTimers(timers: Timer[]) {
+function fetchTimers(listResult: ListResult<Timer[]>) {
     return {
         type: t.FETCH_TIMERS_SUCCESS,
-        payload: timers,
+        payload: listResult,
     }
 }
 
@@ -49,6 +51,13 @@ function removeTimer(timerId: Number) {
     }
 }
 
+function startTimer(timer: Timer) {
+    return {
+        type: t.ACTIVATE_TIMER,
+        payload: timer
+    }
+}
+
 export {
     timerRequest,
     timerRequestFailure,
@@ -56,5 +65,6 @@ export {
     addTimer,
     changeTimer,
     changeActiveTimer,
-    removeTimer
+    removeTimer,
+    startTimer
 }
