@@ -7,71 +7,86 @@ import PageSize from '../../models/PageSize'
 const fetchTimers = (pageSize: PageSize): any => {
     return async (dispatch: Dispatch) => {
         dispatch(actions.timerRequest())
-        try {
-            let result = await TimerService.getList(pageSize)
-            dispatch(actions.fetchTimers(result.data))
-        } catch (error) {
-            dispatch(actions.timerRequestFailure(error))
-        }
+        let result = await TimerService.getList(pageSize)
+        result
+            .ifSuccess((data: Timer) => dispatch(actions.changeTimer(data)))
+            .ifFailure((message: string) =>
+                dispatch(actions.timerRequestFailure(result.message))
+            )
     }
 }
 
 const addTimer = (timer: Timer): any => {
     return async (dispatch: Dispatch) => {
         dispatch(actions.timerRequest())
-        try {
-            let serverTimer = await TimerService.create(timer)
-            dispatch(actions.addTimer(serverTimer))
-        } catch (error) {
-            dispatch(actions.timerRequestFailure(error))
-        }
+        let result = await TimerService.create(timer)
+        result
+            .ifSuccess((data: Timer) => dispatch(actions.addTimer(data)))
+            .ifFailure((message: string) =>
+                dispatch(dispatch(actions.timerRequestFailure(message)))
+            )
     }
 }
 
 const changeTimer = (timer: Timer): any => {
     return async (dispatch: Dispatch) => {
         dispatch(actions.timerRequest())
-        try {
-            await TimerService.save(timer)
-            dispatch(actions.changeTimer(timer))
-        } catch (error) {
-            dispatch(actions.timerRequestFailure(error))
-        }
+        const result = await TimerService.save(timer)
+
+        result
+            .ifSuccess((data: Timer) => dispatch(actions.changeTimer(data)))
+            .ifFailure((message: string) =>
+                dispatch(actions.timerRequestFailure(result.message))
+            )
     }
 }
 
 const removeTimer = (timer: Timer): any => {
     return async (dispatch: Dispatch) => {
         dispatch(actions.timerRequest())
-        try {
-            let removeResponse = await TimerService.remove(timer.id)
-            dispatch(actions.removeTimer(timer.id))
-        } catch (error) {
-            dispatch(actions.timerRequestFailure(error))
-        }
+        const result = await TimerService.remove(timer.id)
+
+        result
+            .ifSuccess((data: Timer) => dispatch(actions.removeTimer(timer.id)))
+            .ifFailure((message: string) =>
+                dispatch(actions.timerRequestFailure(message))
+            )
     }
 }
 
-const startTimer = (timer: Timer): any => {
+const startTimer = (timer: Timer, activeTimer: Timer): any => {
     return async (dispatch: Dispatch) => {
         dispatch(actions.timerRequest())
-        try {
-            let serverTimer = await TimerService.create(timer)
-            dispatch(actions.changeActiveTimer(serverTimer))
-        } catch (error) {
-            dispatch(actions.timerRequestFailure(error))
-        }
+        const result = await TimerService.save(timer)
+        result
+            .ifSuccess((data: Timer) => dispatch(actions.startTimer(timer)))
+            .ifFailure((message: string) =>
+                dispatch(actions.timerRequestFailure(message))
+            )
     }
 }
+
 const changeActiveTimer = (timer: Timer): any => {
     return async (dispatch: Dispatch) => {
         dispatch(actions.timerRequest())
-        try {
-            let data = await TimerService.save(timer)
-            dispatch(actions.changeActiveTimer(timer))
-        } catch (error) {
-            dispatch(actions.timerRequestFailure(error))
-        }
+        let result = await TimerService.save(timer)
+        result
+            .ifSuccess((data: Timer) => dispatch(actions.changeActiveTimer(timer)))
+            .ifFailure((message: string) =>
+                dispatch(actions.timerRequestFailure(message))
+            )
+    }
+}
+
+const stopTimer = (timer: Timer): any => {
+    return async (dispatch: Dispatch) => {
+        dispatch(actions.timerRequest())
+        let result = await TimerService.save(timer)
+        result
+            .ifSuccess((data: Timer) => dispatch(actions.changeActiveTimer(new Timer())))
+            .ifFailure((message: string) =>
+                dispatch(actions.timerRequestFailure(message))
+            )
     }
 }
 
@@ -81,5 +96,5 @@ export {
     changeTimer,
     removeTimer,
     startTimer,
-    changeActiveTimer
+    changeActiveTimer,
 }
