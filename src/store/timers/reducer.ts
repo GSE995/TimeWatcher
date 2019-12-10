@@ -11,13 +11,15 @@ const initialState = {
     errorMsg: '',
     timers: [],
     activeTimer: new Timer(),
+    timerIntervalId: null
 }
 
 export type TimerState = {
     timers: Timer[]
     activeTimer: Timer
     isLoading: boolean
-    errorMsg: string
+    errorMsg: string,
+    timerIntervalId: NodeJS.Timer | null
 }
 
 export { initialState }
