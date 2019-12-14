@@ -3,13 +3,16 @@ import Timer from '../../models/Timer'
 import { Dispatch } from 'redux'
 import * as actions from './actions'
 import PageSize from '../../models/PageSize'
+import ListResult from '../../models/ListResult'
 
 const fetchTimers = (pageSize: PageSize): any => {
     return async (dispatch: Dispatch) => {
         dispatch(actions.timerRequest())
         let result = await TimerService.getList(pageSize)
         result
-            .ifSuccess((data: Timer) => dispatch(actions.changeTimer(data)))
+            .ifSuccess((listResult: ListResult<Timer[]>) => {
+                dispatch(actions.fetchTimers(listResult))
+            })
             .ifFailure((message: string) =>
                 dispatch(actions.timerRequestFailure(result.message))
             )
@@ -44,22 +47,22 @@ const changeTimer = (timer: Timer): any => {
 const removeTimer = (timer: Timer): any => {
     return async (dispatch: Dispatch) => {
         dispatch(actions.timerRequest())
-        const result = await TimerService.remove(timer.id)
+        // const result = await TimerService.remove(timer.id)
 
-        result
-            .ifSuccess((data: Timer) => dispatch(actions.removeTimer(timer.id)))
-            .ifFailure((message: string) =>
-                dispatch(actions.timerRequestFailure(message))
-            )
+        // result
+        //     .ifSuccess((data: Timer) => dispatch(actions.removeTimer(timer.id)))
+        //     .ifFailure((message: string) =>
+        //         dispatch(actions.timerRequestFailure(message))
+        //     )
     }
 }
 
-const startTimer = (timer: Timer, activeTimer: Timer): any => {
+const startTimer = (timer: Timer): any => {
     return async (dispatch: Dispatch) => {
         dispatch(actions.timerRequest())
-        const result = await TimerService.save(timer)
+        const result = await TimerService.create(timer)
         result
-            .ifSuccess((data: Timer) => dispatch(actions.startTimer(timer)))
+            .ifSuccess((data: Timer) => dispatch(actions.startTimer(data)))
             .ifFailure((message: string) =>
                 dispatch(actions.timerRequestFailure(message))
             )
@@ -71,9 +74,9 @@ const changeActiveTimer = (timer: Timer): any => {
         dispatch(actions.timerRequest())
         let result = await TimerService.save(timer)
         result
-            .ifSuccess((data: Timer) => dispatch(actions.changeActiveTimer(timer)))
+            .ifSuccess((data: Timer) => dispatch(actions.changeActiveTimer(data)))
             .ifFailure((message: string) =>
-                dispatch(actions.timerRequestFailure(message))
+               dispatch(actions.timerRequestFailure(message))
             )
     }
 }
@@ -83,7 +86,7 @@ const stopTimer = (timer: Timer): any => {
         dispatch(actions.timerRequest())
         let result = await TimerService.save(timer)
         result
-            .ifSuccess((data: Timer) => dispatch(actions.changeActiveTimer(new Timer())))
+            .ifSuccess((data: Timer) => dispatch(actions.stopTimer(data)))
             .ifFailure((message: string) =>
                 dispatch(actions.timerRequestFailure(message))
             )
@@ -97,4 +100,5 @@ export {
     removeTimer,
     startTimer,
     changeActiveTimer,
+    stopTimer
 }

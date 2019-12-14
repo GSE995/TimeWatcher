@@ -19,7 +19,7 @@ function timerRequestFailure(error: any) {
 function fetchTimers(listResult: ListResult<Timer[]>) {
     return {
         type: t.FETCH_TIMERS_SUCCESS,
-        payload: listResult,
+        payload: listResult.data,
     }
 }
 
@@ -58,6 +58,13 @@ function startTimer(timer: Timer) {
     }
 }
 
+function stopTimer(timer: Timer) {
+    return {
+        type: t.STOP_ACTIVE_TIMER,
+        payload: timer
+    }
+}
+
 export {
     timerRequest,
     timerRequestFailure,
@@ -66,5 +73,6 @@ export {
     changeTimer,
     changeActiveTimer,
     removeTimer,
-    startTimer
+    startTimer,
+    stopTimer
 }
