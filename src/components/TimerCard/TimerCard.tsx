@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Timer } from '../../models'
 import { connect } from 'react-redux'
+import moment from 'moment'
 import styled from 'styled-components'
 
 import * as asyncActions from '../../store/timers/asyncActions'
@@ -63,13 +64,18 @@ type TimerCardState = {
     timer: Timer
 }
 
-function useDisplayTimer(value: Date) {
-    let timerOptions = {
-        hour: 'numeric',
-        minute: 'numeric',
-        second: 'numeric',
+function useDisplayTimer(timer: Timer) {
+    let date = moment(new Date(2019, 1, 1, 0, 0, 0))
+    let start = timer.startDate
+    let end = timer.endDate
+
+    if(end){
+        let diff = +end - +start
+        date.add((diff), 'milliseconds')
+
+        return date.format('HH:mm:ss')
     }
-    return value.toLocaleString('ru', timerOptions)
+    
 }
 
 class TimerCard extends Component<TimerCardProps, TimerCardState> {
@@ -89,7 +95,7 @@ class TimerCard extends Component<TimerCardProps, TimerCardState> {
     }
 
     render() {
-        let displayTimerValue = useDisplayTimer(this.state.timer.value)
+        let displayTimerValue = useDisplayTimer(this.state.timer)
         let playHandler = () => this.props.startTimer(this.state.timer)
 
         return (
