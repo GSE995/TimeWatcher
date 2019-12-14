@@ -1,21 +1,19 @@
 export type TimerDTO = {
-    id: number
+    id: string
     name: string
     value: string
     createDate: string
 }
 
 export default class Timer {
-    public id: number
+    public id: string
     public name: string
-    public value: Date = new Date(2019, 1, 1, 0, 0, 0)
-    public endDate?: Date
-    private startDate: Date = new Date()
+    public endDate?: Date | null
+    public startDate: Date = new Date()
 
     constructor(name: string = '') {
         this.name = name
-        this.value = new Date(2019, 1, 1, 0, 0, 0)
-        this.id = 0
+        this.id = ''
     }
 
     static copy(timer: Timer) {
