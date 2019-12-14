@@ -1,6 +1,6 @@
-import React, { Component } from 'react'
+import React, { useState } from 'react'
 import { Timer } from '../../models'
-import { connect } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import moment from 'moment'
 import styled from 'styled-components'
 
@@ -53,73 +53,53 @@ const Icon = styled.i((props: any) => ({
     color: props.color,
 }))
 
-type TimerCardProps = {
-    startTimer: Function
-    removeTimer: Function
-    changeTimer: Function
-    timer: Timer
-}
-
-type TimerCardState = {
-    timer: Timer
-}
-
-function useDisplayTimer(timer: Timer) {
+function getDisplayTimerValue(timer: Timer) {
     let date = moment(new Date(2019, 1, 1, 0, 0, 0))
     let start = timer.startDate
     let end = timer.endDate
 
-    if(end){
+    if (end) {
         let diff = +end - +start
-        date.add((diff), 'milliseconds')
+        date.add(diff, 'milliseconds')
 
         return date.format('HH:mm:ss')
     }
-    
 }
 
-class TimerCard extends Component<TimerCardProps, TimerCardState> {
-    constructor(props: TimerCardProps) {
-        super(props)
-        this.state = {
-            timer: props.timer,
-        }
-    }
+type TimerCardProps = {
+    timer: Timer
+}
 
-    updateTimerName = (e: React.ChangeEvent<HTMLInputElement>) => {
-        let newTimer = Timer.copy(this.state.timer)
-        newTimer.name = e.currentTarget.value
-        this.setState({
-            timer: newTimer,
-        })
-    }
+function TimerCard(props: TimerCardProps) {
+    let dispatch = useDispatch()
+    let [timerName, setTimerName] = useState(props.timer.name)
 
-    render() {
-        let displayTimerValue = useDisplayTimer(this.state.timer)
-        let playHandler = () => this.props.startTimer(this.state.timer)
+    function changeTimerName(e: React.ChangeEvent<HTMLInputElement>) {
+        setTimerName(e.currentTarget.value)
 
-        return (
-            <TimerCardContent>
-                <TimerNameField
-                    value={this.state.timer.name}
-                    onChange={this.updateTimerName}
-                />
-                <Spacer />
-                <TimerValue>{displayTimerValue}</TimerValue>
-                <PlayButton onClick={playHandler}>
-                    <Icon
-                        className="fas fa-play"
-                        color="rgb(56, 156, 56)"
-                    />
-                </PlayButton>
-            </TimerCardContent>
+        dispatch(
+            asyncActions.changeTimer({
+                ...props.timer,
+                name: e.currentTarget.value,
+            })
         )
     }
+
+    function playHandler() {
+        let timer = new Timer(props.timer.name)
+        dispatch(asyncActions.startTimer(timer))
+    }
+
+    return (
+        <TimerCardContent>
+            <TimerNameField value={timerName} onChange={changeTimerName} />
+            <Spacer />
+            <TimerValue>{getDisplayTimerValue(props.timer)}</TimerValue>
+            <PlayButton onClick={playHandler}>
+                <Icon className="fas fa-play" color="rgb(56, 156, 56)" />
+            </PlayButton>
+        </TimerCardContent>
+    )
 }
 
-const mapDispatchToProps = (dispatch: any) => ({
-    changeTimer: (timer: Timer) => dispatch(asyncActions.changeTimer(timer)),
-    removeTimer: (timer: Timer) => dispatch(asyncActions.removeTimer(timer)),
-})
-
-export default connect(null, mapDispatchToProps)(TimerCard)
+export default TimerCard

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef, createRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { fetchTimers } from '../../store/timers/asyncActions'
 
@@ -25,7 +25,7 @@ function useActiveTimer() {
 
 function getTimerCards(timers: Timer[], onStartTimer: Function) {
     return timers.map((el: Timer) => (
-        <TimerCard timer={el} key={el.id} startTimer={onStartTimer} />
+        <TimerCard timer={el} key={el.id} />
     ))
 }
 
@@ -35,7 +35,7 @@ const TimerPage = () => {
     let activeTimer = useActiveTimer()
 
     function onStartTimer(timer: Timer) {
-        dispatch(startTimer(timer, activeTimer))
+        dispatch(startTimer(timer))
     }
 
     return (
