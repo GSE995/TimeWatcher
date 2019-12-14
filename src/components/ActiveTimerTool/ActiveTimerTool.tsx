@@ -1,5 +1,9 @@
 import React, { Component } from 'react'
-import { addTimer } from '../../store/timers/actions'
+import {
+    changeActiveTimer,
+    startTimer,
+    stopTimer,
+} from '../../store/timers/asyncActions'
 import { Timer } from '../../models'
 import { connect } from 'react-redux'
 import { AppState } from '../../store/'
@@ -11,12 +15,14 @@ import {
     TimerNameField,
     TimerNameWrapper,
     TimerValue,
-    TriggerButton
+    TriggerButton,
 } from './styled'
-
+import moment from 'moment'
 
 type ActiveTimerToolProps = {
-    addTimer: Function
+    startTimer: Function
+    changeActiveTimer: Function
+    stopTimer: Function
     activeTimer: Timer
     timerLoading: Boolean
 }
@@ -31,11 +37,6 @@ class ActiveTimerTool extends Component<
     ActiveTimerToolProps,
     ActiveTimerToolState
 > {
-    private timerOptions: any = {
-        hour: 'numeric',
-        minute: 'numeric',
-        second: 'numeric',
-    }
     constructor(props: ActiveTimerToolProps) {
         super(props)
 
@@ -46,66 +47,99 @@ class ActiveTimerTool extends Component<
         }
     }
 
+    changeNameBuffer: any
+
     private tick = (): void => {
         this.setState({
             timerValue: this.getNextTime(this.state.timerValue),
         })
     }
 
-    private getNextTime = (currentValue: Date) => {
-        return new Date(
-            currentValue.getFullYear(),
-            currentValue.getMonth(),
-            currentValue.getDate(),
-            currentValue.getHours(),
-            currentValue.getMinutes(),
-            currentValue.getSeconds() + 1
-        )
+    public getNextTime = (currentValue: Date) => {
+        return moment(currentValue)
+            .add(1, 'seconds')
+            .toDate()
     }
 
-    private getDefaultState = (): ActiveTimerToolState => {
-        return {
-            timerID: null,
-            timerValue: new Date(2019, 1, 1, 0, 0, 0),
-            timerName: '',
-        }
+    public getDisplayTimerValue(value: Date) {
+        return moment(value).format('HH:mm:ss')
+    }
+
+    public getExistTimerValue(timer: Timer): Date {
+        let date = moment(new Date(2019, 1, 1, 0, 0, 0))
+        let start = timer.startDate
+
+        let diff = +new Date() - +start
+        date.add(diff, 'milliseconds')
+
+        return date.toDate()
     }
 
     public startTimer = (): void => {
         let timerID = setInterval(() => this.tick(), 1000)
 
+        let timerValue = this.props.activeTimer.id
+            ? this.getExistTimerValue(this.props.activeTimer)
+            : this.state.timerValue
+
         this.setState({
             timerID,
-            timerValue: this.getNextTime(this.state.timerValue),
+            timerValue: this.getNextTime(timerValue),
+            timerName: this.props.activeTimer.name,
         })
+
+        if (!this.props.activeTimer.id) {
+            this.props.startTimer(this.props.activeTimer)
+        }
     }
 
     public stopTimer = (): void => {
         clearInterval(this.state.timerID)
+
         this.setState({
             timerID: null,
+            timerValue: new Date(2019, 1, 1, 0, 0, 0),
+            timerName: '',
         })
-        this.addTimer()
-    }
 
-    public addTimer = (): void => {
-        let timer = new Timer('')
-        this.props.addTimer(timer)
-        this.setState(this.getDefaultState())
+        this.props.stopTimer({
+            ...this.props.activeTimer,
+            name: this.state.timerName,
+            endDate: new Date(),
+        })
     }
 
     public onChangeTimerName = (e: any) => {
         this.setState({
             timerName: e.currentTarget.value,
         })
+
+        if (this.props.activeTimer.id) {
+            let copyActiveTimer = {
+                ...this.props.activeTimer,
+                name: e.currentTarget.value,
+            }
+
+            clearTimeout(this.changeNameBuffer)
+            this.changeNameBuffer = setTimeout(() => {
+                this.props.changeActiveTimer(copyActiveTimer)
+            }, 500)
+        }
+    }
+
+    public isActiveTimer(): Boolean {
+        return Boolean(
+            this.props.activeTimer.id &&
+                !this.props.activeTimer.endDate &&
+                !this.state.timerID
+        )
+    }
+
+    componentDidUpdate() {
+        if (this.isActiveTimer()) this.startTimer()
     }
 
     render() {
-        let displayTimerValue = this.state.timerValue.toLocaleString(
-            'ru',
-            this.timerOptions
-        )
-
         const triggerButtonHandler = this.state.timerID
             ? this.stopTimer
             : this.startTimer
@@ -127,12 +161,16 @@ class ActiveTimerTool extends Component<
                 <TimerNameWrapper>
                     <TimerNameField
                         placeholder="What are you working now?"
-                        value={this.props.activeTimer.name}
+                        value={
+                            this.state.timerName || this.props.activeTimer.name
+                        }
                         onChange={this.onChangeTimerName}
                     />
                 </TimerNameWrapper>
                 <TimerActions>
-                    <TimerValue>{displayTimerValue}</TimerValue>
+                    <TimerValue>
+                        {this.getDisplayTimerValue(this.state.timerValue)}
+                    </TimerValue>
                     <TriggerButton onClick={triggerButtonHandler}>
                         <Icon {...triggerIcon} />
                     </TriggerButton>
@@ -144,7 +182,10 @@ class ActiveTimerTool extends Component<
 
 const mapStateToProps = (
     state: AppState
-): Omit<ActiveTimerToolProps, 'addTimer'> => ({
+): Omit<
+    ActiveTimerToolProps,
+    'startTimer' | 'changeActiveTimer' | 'stopTimer'
+> => ({
     timerLoading: state.timer.isLoading,
     activeTimer: state.timer.activeTimer,
 })
@@ -152,7 +193,11 @@ const mapStateToProps = (
 const mapDispatchToProps = (
     dispatch: any
 ): Omit<ActiveTimerToolProps, 'timerLoading' | 'activeTimer'> => ({
-    addTimer: (timer: Timer) => dispatch(addTimer(timer)),
+    startTimer: (timer: Timer) => dispatch(startTimer(timer)),
+    stopTimer: (timer: Timer) => dispatch(stopTimer(timer)),
+    changeActiveTimer: (timer: Timer) => {
+        dispatch(changeActiveTimer(timer))
+    },
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ActiveTimerTool)
