@@ -13,7 +13,7 @@ class Result<T> {
     }
 
     public ifFailure(f: Function) : Result<T>{
-        if(this.success) f(this.message)
+        if(!this.success) f(this.message)
         return this
     }
 
