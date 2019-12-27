@@ -16,7 +16,7 @@ function timerRequestFailure(error: any) {
     }
 }
 
-function fetchTimers(listResult: ListResult<Timer[]>) {
+function fetchTimers(listResult: ListResult<Timer>) {
     return {
         type: t.FETCH_TIMERS_SUCCESS,
         payload: listResult.data,
@@ -44,7 +44,7 @@ function changeActiveTimer(timer: Timer) {
     }
 }
 
-function removeTimer(timerId: Number) {
+function removeTimer(timerId: string) {
     return {
         type: t.CHANGE_TIMER,
         payload: timerId,

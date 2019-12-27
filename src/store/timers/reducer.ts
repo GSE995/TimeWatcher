@@ -30,7 +30,8 @@ export default ( state: TimerState = initialState, {type, payload}: TimerAction)
             return {
                 ...state,
                 isLoading: false,
-                timers: [...payload],
+                timers: payload.filter((el: Timer) => el.endDate),
+                activeTimer: payload.filter((el: Timer) => !el.endDate)[0] || new Timer(),
             }
         case t.ADD_TIMER:
             return {
@@ -72,7 +73,7 @@ export default ( state: TimerState = initialState, {type, payload}: TimerAction)
             return {
                 ...state,
                 activeTimer: new Timer(),
-                timers: [...state.timers, payload],
+                timers: [payload,  ...state.timers],
             }
         case t.CHANGE_ACTIVE_TIMER:
             return {
