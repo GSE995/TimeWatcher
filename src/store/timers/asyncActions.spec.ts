@@ -22,9 +22,7 @@ describe('AsyncActions testing', () => {
         timer.endDate = new Date()
         let listResult = new ListResult<Timer>([], 1, pageSize)
 
-        axiosMock.onGet(API_ROOT_URL + 'list').replyOnce(200, {
-            data: listResult, success: true
-        })
+        axiosMock.onGet(API_ROOT_URL + 'list').replyOnce(200, listResult)
 
         const expectedActions = [
             actions.timerRequest(),
