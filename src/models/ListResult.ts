@@ -3,9 +3,9 @@ import PageSize from "./PageSize"
 export default class ListResult<T> {
     total: number
     pageSize: PageSize
-    data: T[]
+    data: Array<T>
 
-    constructor(data: T[], total: number, pageSize: PageSize){
+    constructor(data: Array<T>, total: number, pageSize: PageSize){
         this.data = data
         this.total = total
         this.pageSize = pageSize
