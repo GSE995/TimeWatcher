@@ -53,7 +53,7 @@ export default class TimersServie<T> {
     static async getList(pageSize: PageSize): Promise<SuccessResult<ListResult<Timer>> | ErrorResult> {
         try {
             let result = await axios.get(API_ROOT_URL + 'list')
-            return new SuccessResult(result.data.data)
+            return new SuccessResult(result.data)
         } catch (error) {
             console.log(error)
             return new ErrorResult(error)
