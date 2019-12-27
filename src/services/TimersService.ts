@@ -1,24 +1,19 @@
 import axios from 'axios'
-import Timer, { TimerDTO } from '../models/Timer'
-import {Result, SuccessResult, ErrorResult} from '../models/Result'
+import Timer from '../models/Timer'
+import {SuccessResult, ErrorResult} from '../models/Result'
 import ListResult from '../models/ListResult'
 import PageSize from '../models/PageSize'
-import firebase from '../config/firebase'
-import moment from 'moment'
 
-const db = firebase.firestore()
-const collection = db.collection('timers')
-
-const API_ROOT_URL = '/api/timer'
+const API_ROOT_URL = '/api/timer/'
 export { API_ROOT_URL }
 
-// сервис заглушка
+// service for work with TimeWatcherService
 export default class TimersServie<T> {
 
     static async get(id: number): Promise<SuccessResult<Timer> | ErrorResult> {
         try {
-            let {data} = await axios.get(`${API_ROOT_URL}/${id}`)
-            return new SuccessResult(Timer.createFrom(data))
+            let result = await axios.get(API_ROOT_URL + id)
+            return new SuccessResult(result.data)
         } catch (error) {
             console.log(error)
             return new ErrorResult(error)
@@ -27,16 +22,8 @@ export default class TimersServie<T> {
 
     static async create(timer: Timer): Promise<SuccessResult<Timer> | ErrorResult> {
         try {
-            let timerForSave = {
-                name: timer.name,
-                endDate: timer.endDate || null,
-                startDate: timer.startDate
-            }
-            let docRef: any = await collection.add(timerForSave)
-            let serverTimer = new Timer(timer.name)
-            serverTimer.startDate = timer.startDate
-            serverTimer.id = docRef.id
-            return new SuccessResult(serverTimer)
+            let result = await axios.post(API_ROOT_URL, timer)
+            return new SuccessResult(result.data)
         } catch (error) {
             console.log(error)
             return new ErrorResult(error)
@@ -45,22 +32,17 @@ export default class TimersServie<T> {
 
     static async save(timer: Timer): Promise<SuccessResult<Timer> | ErrorResult> {
         try {
-            let timerForSave = {
-                name: timer.name,
-                endDate: timer.endDate || null,
-                startDate: timer.startDate
-            }
-            let res = await collection.doc(timer.id).update(timerForSave)
-            return new SuccessResult(timer)
+            let result = await axios.put(API_ROOT_URL + timer.id, timer)
+            return new SuccessResult(result.data)
         } catch (error) {
             console.log(error)
             return new ErrorResult(error)
         }
     }
 
-    static async remove(id: number): Promise<SuccessResult<Boolean> | ErrorResult> {
+    static async remove(id: string): Promise<SuccessResult<Boolean> | ErrorResult> {
         try {
-            let response = await axios.delete(`${API_ROOT_URL}/${id}`)
+            let result = await axios.delete(API_ROOT_URL + id)
             return new SuccessResult(true)
         } catch (error) {
             console.log(error)
@@ -68,22 +50,10 @@ export default class TimersServie<T> {
         }
     }
 
-    static async getList(pageSize: PageSize): Promise<SuccessResult<ListResult<Timer[]>> | ErrorResult> {
-        const collection = db.collection('timers')
-
+    static async getList(pageSize: PageSize): Promise<SuccessResult<ListResult<Timer>> | ErrorResult> {
         try {
-            let querySnapshot = await collection.orderBy('endDate', 'desc') .get()
-            let timers: any = []
-            
-            querySnapshot.forEach(doc => {
-                let data = doc.data()
-                let timer = new Timer(data.name)
-                timer.id = doc.id
-                timer.startDate = data.startDate.toDate()
-                timer.endDate = data.endDate ? data.endDate.toDate() : null
-                timers.push(timer)
-            })
-            return new SuccessResult(new ListResult<Timer[]>(timers, 1, pageSize))
+            let result = await axios.get(API_ROOT_URL)
+            return new SuccessResult(result.data)
         } catch (error) {
             console.log(error)
             return new ErrorResult(error)
