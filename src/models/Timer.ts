@@ -1,8 +1,11 @@
+import moment from "moment"
+
 export type TimerDTO = {
     id: string
     name: string
     value: string
-    createDate: string
+    startDate: string,
+    endDate: string
 }
 
 export default class Timer {
@@ -22,7 +25,8 @@ export default class Timer {
 
     static createFrom(dto: TimerDTO) {
         let timer = new Timer()
-        timer.startDate = new Date(Date.parse(dto.createDate))
+        timer.startDate = dto.startDate ? moment(dto.startDate).toDate() : new Date()
+        timer.endDate = dto.endDate ? moment(dto.endDate).toDate() : null
         timer.id = dto.id
         timer.name = dto.name
         return timer

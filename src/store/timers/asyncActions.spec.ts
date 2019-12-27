@@ -1,51 +1,48 @@
 import configureMockStore from 'redux-mock-store'
+import AxiosMockAdapter from 'axios-mock-adapter'
 import thunk from 'redux-thunk'
-import fetchMock from 'fetch-mock'
-
-import {API_ROOT_URL} from '../../services/TimersService'
-
-import { Timer } from '../../models'
+import axios from 'axios'
 
 import * as asyncAction from './asyncActions'
 import * as actions from './actions'
-import * as t from './actionTypes'
+
 import PageSize from '../../models/PageSize'
+import ListResult from '../../models/ListResult'
+import { Timer } from '../../models'
+
+import {API_ROOT_URL} from '../../services/TimersService'
 
 const mockStore = configureMockStore([thunk])
+const axiosMock = new AxiosMockAdapter(axios)
 
 describe('AsyncActions testing', () => {
-    afterEach(() => {
-        fetchMock.reset()
-        fetchMock.restore()
-    })
-
-    it('Fetch timers', () => {
+    it('Fetch timers success', async () => {
+        let pageSize = new PageSize(0, 10)
         let timer = new Timer('')
+        timer.endDate = new Date()
+        let listResult = new ListResult<Timer>([], 1, pageSize)
 
-        fetchMock.getOnce(`${API_ROOT_URL}/list`, {
-            headers: {'content-type': 'application/json'},
-            body: { data: [timer], success: true}
+        axiosMock.onGet(API_ROOT_URL + 'list').replyOnce(200, {
+            data: listResult, success: true
         })
 
         const expectedActions = [
             actions.timerRequest(),
-            actions.fetchTimers([timer])
+            actions.fetchTimers(listResult)
         ]
 
         const store = mockStore({})
 
-        return store.dispatch(asyncAction.fetchTimers(new PageSize(0, 10))).then(() => {
-            expect(store.getActions()).toEqual(expectedActions)
-        })
+        await store.dispatch(asyncAction.fetchTimers(pageSize))
+        return expect(store.getActions()).toEqual(expectedActions)
     })
 
-    it('Change timer', () => {
+    it('Change timer', async () => {
         let timer = new Timer('')
+        timer.endDate = new Date()
+        timer.id = "qwewo3"
 
-        fetchMock.putOnce(`${API_ROOT_URL}`, {
-            headers: {'content-type': 'application/json'},
-            body: { data: timer, success: true}
-        })
+        axiosMock.onPut(`${API_ROOT_URL}${timer.id}`).reply(200, timer)
 
         const expectedActions = [
             actions.timerRequest(),
@@ -54,18 +51,17 @@ describe('AsyncActions testing', () => {
 
         const store = mockStore({})
 
-        return store.dispatch(asyncAction.changeTimer(timer)).then(() => {
-            expect(store.getActions()).toEqual(expectedActions)
-        })
+        await store.dispatch(asyncAction.changeTimer(timer))
+        return expect(store.getActions()).toEqual(expectedActions)
     })
 
     it('Remove timer', () => {
-        let timer = new Timer('')
-        timer.id = 1
+        let timer = new Timer()
+        timer.endDate = new Date()
+        timer.id = "qwewo3"
 
-        fetchMock.deleteOnce(`${API_ROOT_URL}/${timer.id}`, {
-            headers: {'content-type': 'application/json'},
-            body: { success: true }
+        axiosMock.onDelete(API_ROOT_URL + timer.id).reply(200, {
+            success: true
         })
 
         const expectedActions = [
@@ -80,33 +76,27 @@ describe('AsyncActions testing', () => {
         })
     })
 
-    it('Start timer', () => {
-        let timer = new Timer('')
+    it('Start timer', async () => {
+        let timer = new Timer()
+        timer.endDate = null
 
-        fetchMock.postOnce(`${API_ROOT_URL}`, {
-            headers: {'content-type': 'application/json'},
-            body: { data: timer, success: true}
-        })
+        axiosMock.onPost(API_ROOT_URL).reply(200, timer)
 
         const expectedActions = [
             actions.timerRequest(),
-            actions.changeActiveTimer(timer)
+            actions.startTimer(timer)
         ]
 
         const store = mockStore({})
-
-        return store.dispatch(asyncAction.startTimer(timer)).then(() => {
-            expect(store.getActions()).toEqual(expectedActions)
-        })
+        await store.dispatch(asyncAction.startTimer(timer))
+        return expect(store.getActions()).toEqual(expectedActions)
     })
 
-    it('Change active timer', () => {
+    it('Change active timer', async () => {
         let timer = new Timer('')
+        timer.endDate = new Date()
 
-        fetchMock.putOnce(`${API_ROOT_URL}`, {
-            headers: {'content-type': 'application/json'},
-            body: { data: timer, success: true}
-        })
+        axiosMock.onPut(API_ROOT_URL + timer.id).reply(200, timer)
 
         const expectedActions = [
             actions.timerRequest(),
@@ -115,8 +105,7 @@ describe('AsyncActions testing', () => {
 
         const store = mockStore({})
 
-        return store.dispatch(asyncAction.changeActiveTimer(timer)).then(() => {
-            expect(store.getActions()).toEqual(expectedActions)
-        })
+        await store.dispatch(asyncAction.changeActiveTimer(timer))
+        return expect(store.getActions()).toEqual(expectedActions)
     })
 })

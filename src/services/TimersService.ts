@@ -4,7 +4,7 @@ import {SuccessResult, ErrorResult} from '../models/Result'
 import ListResult from '../models/ListResult'
 import PageSize from '../models/PageSize'
 
-const API_ROOT_URL = '/api/timer/'
+const API_ROOT_URL = 'http://localhost:3001/api/v1/timer/'
 export { API_ROOT_URL }
 
 // service for work with TimeWatcherService
@@ -23,7 +23,7 @@ export default class TimersServie<T> {
     static async create(timer: Timer): Promise<SuccessResult<Timer> | ErrorResult> {
         try {
             let result = await axios.post(API_ROOT_URL, timer)
-            return new SuccessResult(result.data)
+            return new SuccessResult(Timer.createFrom(result.data))
         } catch (error) {
             console.log(error)
             return new ErrorResult(error)
@@ -33,7 +33,7 @@ export default class TimersServie<T> {
     static async save(timer: Timer): Promise<SuccessResult<Timer> | ErrorResult> {
         try {
             let result = await axios.put(API_ROOT_URL + timer.id, timer)
-            return new SuccessResult(result.data)
+            return new SuccessResult(Timer.createFrom(result.data))
         } catch (error) {
             console.log(error)
             return new ErrorResult(error)
@@ -52,8 +52,8 @@ export default class TimersServie<T> {
 
     static async getList(pageSize: PageSize): Promise<SuccessResult<ListResult<Timer>> | ErrorResult> {
         try {
-            let result = await axios.get(API_ROOT_URL)
-            return new SuccessResult(result.data)
+            let result = await axios.get(API_ROOT_URL + 'list')
+            return new SuccessResult(result.data.data)
         } catch (error) {
             console.log(error)
             return new ErrorResult(error)

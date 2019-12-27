@@ -11,7 +11,8 @@ const initialState = {
     errorMsg: '',
     timers: [],
     activeTimer: new Timer(),
-    timerIntervalId: null
+    timerIntervalId: null,
+    timerTotal: 0
 }
 
 export type TimerState = {
@@ -19,7 +20,8 @@ export type TimerState = {
     activeTimer: Timer
     isLoading: boolean
     errorMsg: string,
-    timerIntervalId: NodeJS.Timer | null
+    timerIntervalId: NodeJS.Timer | null,
+    timerTotal: number
 }
 
 export { initialState }
@@ -30,8 +32,9 @@ export default ( state: TimerState = initialState, {type, payload}: TimerAction)
             return {
                 ...state,
                 isLoading: false,
-                timers: payload.filter((el: Timer) => el.endDate),
-                activeTimer: payload.filter((el: Timer) => !el.endDate)[0] || new Timer(),
+                timers: payload.data.filter((el: Timer) => el.endDate),
+                activeTimer: payload.data.filter((el: Timer) => !el.endDate)[0] || new Timer(),
+                timerTotal: payload.total,
             }
         case t.ADD_TIMER:
             return {
@@ -62,7 +65,7 @@ export default ( state: TimerState = initialState, {type, payload}: TimerAction)
             return {
                 ...state,
                 isLoading: false,
-                errorMsg: payload.errorMsg,
+                errorMsg: payload,
             }
         case t.ACTIVATE_TIMER:
             return {

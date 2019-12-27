@@ -11,7 +11,7 @@ function timerRequest() {
 
 function timerRequestFailure(error: any) {
     return {
-        type: t.TIMER_LOADING,
+        type: t.TIMER_FAILURE_REQUEST,
         payload: error,
     }
 }
@@ -19,7 +19,7 @@ function timerRequestFailure(error: any) {
 function fetchTimers(listResult: ListResult<Timer>) {
     return {
         type: t.FETCH_TIMERS_SUCCESS,
-        payload: listResult.data,
+        payload: listResult,
     }
 }
 
