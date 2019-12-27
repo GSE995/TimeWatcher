@@ -10,11 +10,11 @@ const fetchTimers = (pageSize: PageSize): any => {
         dispatch(actions.timerRequest())
         let result = await TimerService.getList(pageSize)
         result
-            .ifSuccess((listResult: ListResult<Timer[]>) => {
+            .ifSuccess((listResult: ListResult<Timer>) => {
                 dispatch(actions.fetchTimers(listResult))
             })
             .ifFailure((message: string) =>
-                dispatch(actions.timerRequestFailure(result.message))
+                dispatch(actions.timerRequestFailure(message))
             )
     }
 }
@@ -47,13 +47,13 @@ const changeTimer = (timer: Timer): any => {
 const removeTimer = (timer: Timer): any => {
     return async (dispatch: Dispatch) => {
         dispatch(actions.timerRequest())
-        // const result = await TimerService.remove(timer.id)
+        const result = await TimerService.remove(timer.id)
 
-        // result
-        //     .ifSuccess((data: Timer) => dispatch(actions.removeTimer(timer.id)))
-        //     .ifFailure((message: string) =>
-        //         dispatch(actions.timerRequestFailure(message))
-        //     )
+        result
+            .ifSuccess((data: Timer) => dispatch(actions.removeTimer(timer.id)))
+            .ifFailure((message: string) =>
+                dispatch(actions.timerRequestFailure(message))
+            )
     }
 }
 
