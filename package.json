@@ -3,8 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@babel/plugin-proposal-optional-chaining": "^7.7.5",
     "axios": "^0.19.0",
     "firebase": "^7.5.2",
+    "moment": "^2.24.0",
     "node-sass": "^4.12.0",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
@@ -14,12 +16,11 @@
     "redux": "^4.0.4",
     "redux-thunk": "^2.3.0",
     "sass-loader": "^7.1.0",
-    "styled-components": "^4.4.1",
-    "moment": "^2.24.0"
+    "styled-components": "^4.4.1"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "storybook": "start-storybook"
@@ -46,6 +47,8 @@
     "@types/redux-mock-store": "^1.0.1",
     "@types/styled-components": "^4.4.0",
     "axios-mock-adapter": "^1.17.0",
+    "customize-cra": "^0.9.1",
+    "react-app-rewired": "^2.1.5",
     "redux-devtools": "^3.5.0",
     "redux-mock-store": "^1.5.3",
     "typescript": "^3.7.2"
