@@ -1,3 +1,4 @@
+import { Reducer } from "redux"
 import { Timer } from '../../models'
 import * as t from './actionTypes'
 
@@ -17,7 +18,7 @@ const initialState = {
 
 export type TimerState = {
     timers: Timer[]
-    activeTimer: Timer
+    activeTimer: Timer | null
     isLoading: boolean
     errorMsg: string,
     timerIntervalId: NodeJS.Timer | null,
@@ -26,7 +27,7 @@ export type TimerState = {
 
 export { initialState }
 
-export default ( state: TimerState = initialState, {type, payload}: TimerAction) : TimerState => {
+const reducer: Reducer<TimerState, TimerAction> = ( state = initialState, {type, payload}) => {
     switch (type) {
         case t.FETCH_TIMERS_SUCCESS:
             return {
@@ -75,7 +76,7 @@ export default ( state: TimerState = initialState, {type, payload}: TimerAction)
         case t.STOP_ACTIVE_TIMER:
             return {
                 ...state,
-                activeTimer: new Timer(),
+                activeTimer: null,
                 timers: [payload,  ...state.timers],
             }
         case t.CHANGE_ACTIVE_TIMER:
@@ -87,3 +88,5 @@ export default ( state: TimerState = initialState, {type, payload}: TimerAction)
             return state
     }
 }
+
+export default reducer
