@@ -23,7 +23,7 @@ type ActiveTimerToolProps = {
     startTimer: Function
     changeActiveTimer: Function
     stopTimer: Function
-    activeTimer: Timer
+    activeTimer: Timer | null
     timerLoading: Boolean
 }
 
@@ -78,18 +78,20 @@ class ActiveTimerTool extends Component<
     public startTimer = (): void => {
         let timerID = setInterval(() => this.tick(), 1000)
 
-        let timerValue = this.props.activeTimer.id
-            ? this.getExistTimerValue(this.props.activeTimer)
+        let timer = this.props.activeTimer || new Timer(this.state.timerName)
+
+        let timerValue = timer.id
+            ? this.getExistTimerValue(timer)
             : this.state.timerValue
 
         this.setState({
             timerID,
             timerValue: this.getNextTime(timerValue),
-            timerName: this.props.activeTimer.name,
+            timerName: timer.name,
         })
 
-        if (!this.props.activeTimer.id) {
-            this.props.startTimer(this.props.activeTimer)
+        if (!timer.id) {
+            this.props.startTimer(timer)
         }
     }
 
@@ -114,7 +116,7 @@ class ActiveTimerTool extends Component<
             timerName: e.currentTarget.value,
         })
 
-        if (this.props.activeTimer.id) {
+        if (this.props.activeTimer && this.props.activeTimer.id) {
             let copyActiveTimer = {
                 ...this.props.activeTimer,
                 name: e.currentTarget.value,
@@ -129,14 +131,14 @@ class ActiveTimerTool extends Component<
 
     public isActiveTimer(): Boolean {
         return Boolean(
-            this.props.activeTimer.id &&
-                !this.props.activeTimer.endDate &&
-                !this.state.timerID
+            !this.state.timerID &&
+                 this.props.activeTimer &&
+                !this.props.activeTimer.id
         )
     }
 
     componentDidUpdate() {
-        if (this.isActiveTimer()) this.startTimer()
+        if (!this.isActiveTimer()) this.startTimer()
     }
 
     render() {
@@ -161,9 +163,7 @@ class ActiveTimerTool extends Component<
                 <TimerNameWrapper>
                     <TimerNameField
                         placeholder="What are you working now?"
-                        value={
-                            this.state.timerName || this.props.activeTimer.name
-                        }
+                        value={this.state.timerName}
                         onChange={this.onChangeTimerName}
                     />
                 </TimerNameWrapper>
