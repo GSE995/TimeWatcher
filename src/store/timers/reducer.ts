@@ -16,15 +16,6 @@ const initialState = {
     timerTotal: 0
 }
 
-export type TimerState = {
-    timers: Timer[]
-    activeTimer: Timer | null
-    isLoading: boolean
-    errorMsg: string,
-    timerIntervalId: NodeJS.Timer | null,
-    timerTotal: number
-}
-
 export { initialState }
 
 const reducer: Reducer<TimerState, TimerAction> = ( state = initialState, {type, payload}) => {

@@ -1,10 +1,6 @@
 import { createStore, applyMiddleware, combineReducers } from 'redux' 
 import thunk from 'redux-thunk'
-import timer, {TimerState} from './timers/reducer'
-
-export type AppState = {
-    timer: TimerState
-}
+import timer from './timers/reducer'
 
 const store = createStore(combineReducers<AppState>({timer}), applyMiddleware(thunk))
 
