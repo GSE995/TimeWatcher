@@ -15,8 +15,8 @@ import {API_ROOT_URL} from '../../services/TimersService'
 const mockStore = configureMockStore([thunk])
 const axiosMock = new AxiosMockAdapter(axios)
 
-describe('AsyncActions testing', () => {
-    it('Fetch timers success', async () => {
+describe('AsyncActions for timer testing', () => {
+    it('Fetch timers', async () => {
         let pageSize = new PageSize(0, 10)
         let timer = new Timer('')
         timer.endDate = new Date()
@@ -32,6 +32,23 @@ describe('AsyncActions testing', () => {
         const store = mockStore({})
 
         await store.dispatch(asyncAction.fetchTimers(pageSize))
+        return expect(store.getActions()).toEqual(expectedActions)
+    })
+
+    it('Add timer', async () => {
+        let timer = new Timer('')
+        timer.endDate = new Date()
+
+        axiosMock.onPost(API_ROOT_URL).replyOnce(200, timer)
+
+        const expectedActions = [
+            actions.timerRequest(),
+            actions.addTimer(timer)
+        ]
+
+        const store = mockStore({})
+
+        await store.dispatch(asyncAction.addTimer(timer))
         return expect(store.getActions()).toEqual(expectedActions)
     })
 
@@ -85,8 +102,24 @@ describe('AsyncActions testing', () => {
             actions.startTimer(timer)
         ]
 
-        const store = mockStore({})
+        const store = mockStore({timer: {}})
         await store.dispatch(asyncAction.startTimer(timer))
+        return expect(store.getActions()).toEqual(expectedActions)
+    })
+
+    it('Stop timer', async () => {
+        let timer = new Timer()
+        timer.endDate = new Date()
+
+        axiosMock.onPut(API_ROOT_URL).reply(200, timer)
+
+        const expectedActions = [
+            actions.stopTimer(),
+            actions.addTimer(timer)
+        ]
+
+        const store = mockStore({timer: {}})
+        await store.dispatch(asyncAction.stopTimer(timer))
         return expect(store.getActions()).toEqual(expectedActions)
     })
 
