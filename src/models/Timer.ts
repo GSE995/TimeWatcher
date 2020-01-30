@@ -28,7 +28,10 @@ export default class Timer {
     }
 
     static copy(timer: Timer) {
-        return new Timer(timer.name)
+        let copy = new Timer(timer.name)
+        copy.endDate = timer.endDate ? new Date(timer.endDate) : null
+        copy.startDate = new Date(timer.startDate)
+        return copy
     }
 
     static createFrom(dto: TimerDTO) {
