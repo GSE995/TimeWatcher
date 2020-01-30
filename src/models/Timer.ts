@@ -19,6 +19,14 @@ export default class Timer {
         this.id = ''
     }
 
+    public getValue(): Date {
+        let start = this.startDate
+        let end = this.endDate || new Date()
+        let diff = +end - +start
+    
+        return new Date(diff)
+    }
+
     static copy(timer: Timer) {
         return new Timer(timer.name)
     }
