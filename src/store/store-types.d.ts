@@ -1,6 +1,6 @@
 
-interface TimerState {
-    timers: Timer[]
+type TimerState = {
+    timers: ITimer[]
     activeTimer: Timer | null
     isLoading: boolean
     errorMsg: string,
@@ -8,7 +8,7 @@ interface TimerState {
     timerTotal: number
 }
 
-interface AppState {
+type AppState =  {
     timer: TimerState
 }
 

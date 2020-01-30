@@ -11,9 +11,9 @@ const initialState = {
     isLoading: false,
     errorMsg: '',
     timers: [],
-    activeTimer: new Timer(),
     timerIntervalId: null,
-    timerTotal: 0
+    timerTotal: 0,
+    activeTimer: null
 }
 
 export { initialState }
@@ -25,22 +25,19 @@ const reducer: Reducer<TimerState, TimerAction> = ( state = initialState, {type,
                 ...state,
                 isLoading: false,
                 timers: payload.data.filter((el: Timer) => el.endDate),
-                activeTimer: payload.data.filter((el: Timer) => !el.endDate)[0] || new Timer(),
+                activeTimer: payload.data.filter((el: Timer) => !el.endDate)[0],
                 timerTotal: payload.total,
             }
         case t.ADD_TIMER:
             return {
                 ...state,
-                timers: [...state.timers, payload],
+                timers: [payload, ...state.timers],
             }
         case t.CHANGE_TIMER:
             return {
                 ...state,
                 timers: state.timers.map((timer) => {
-                    if (timer.id === payload.id) {
-                        return { ...payload }
-                    }
-                    return timer
+                    return timer.id === payload.id ? payload : timer
                 }),
             }
         case t.REMOVE_TIMER:
@@ -67,8 +64,7 @@ const reducer: Reducer<TimerState, TimerAction> = ( state = initialState, {type,
         case t.STOP_ACTIVE_TIMER:
             return {
                 ...state,
-                activeTimer: null,
-                timers: [payload,  ...state.timers],
+                activeTimer: null
             }
         case t.CHANGE_ACTIVE_TIMER:
             return {

@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import { Timer } from '../../models'
 import { useDispatch } from 'react-redux'
-import moment from 'moment'
 import styled from 'styled-components'
 
 import * as asyncActions from '../../store/timers/asyncActions'
+import { getDisplayTimerValue } from '../../utils/timer'
 
 const hoverCardBackground = 'rgb(248, 247, 247)'
 
@@ -33,6 +33,7 @@ const TimerNameField = styled.input`
 
 const PlayButton = styled.button`
     padding-right: 20px;
+    background-color: #fff;
     ${TimerCardContent}:hover & {
         background-color: ${hoverCardBackground};
     }
@@ -50,25 +51,10 @@ const TimerValue = styled.div`
 
 const Icon = styled.i((props: any) => ({
     'font-size': props.size,
-    color: props.color,
+    color: props.color
 }))
 
-function getDisplayTimerValue(timer: Timer) {
-    let date = moment(new Date(2019, 1, 1, 0, 0, 0))
-    let start = timer.startDate
-    let end = timer.endDate
-
-    if (end) {
-        let diff = +end - +start
-        date.add(diff, 'milliseconds')
-
-        return date.format('HH:mm:ss')
-    }
-}
-
-type TimerCardProps = {
-    timer: Timer
-}
+type TimerCardProps = { timer: Timer }
 
 function TimerCard(props: TimerCardProps) {
     let dispatch = useDispatch()
@@ -76,13 +62,9 @@ function TimerCard(props: TimerCardProps) {
 
     function changeTimerName(e: React.ChangeEvent<HTMLInputElement>) {
         setTimerName(e.currentTarget.value)
-
-        dispatch(
-            asyncActions.changeTimer({
-                ...props.timer,
-                name: e.currentTarget.value,
-            })
-        )
+        let timer = props.timer
+        timer.name = e.currentTarget.value
+        dispatch(asyncActions.changeTimer(timer))
     }
 
     function playHandler() {
@@ -90,11 +72,13 @@ function TimerCard(props: TimerCardProps) {
         dispatch(asyncActions.startTimer(timer))
     }
 
+    let displayTimerValue = getDisplayTimerValue(props.timer.getValue())
+
     return (
         <TimerCardContent>
             <TimerNameField value={timerName} onChange={changeTimerName} />
             <Spacer />
-            <TimerValue>{getDisplayTimerValue(props.timer)}</TimerValue>
+            <TimerValue>{displayTimerValue}</TimerValue>
             <PlayButton onClick={playHandler}>
                 <Icon className="fas fa-play" color="rgb(56, 156, 56)" />
             </PlayButton>

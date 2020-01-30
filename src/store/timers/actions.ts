@@ -58,10 +58,9 @@ function startTimer(timer: Timer) {
     }
 }
 
-function stopTimer(timer: Timer) {
+function stopTimer() {
     return {
-        type: t.STOP_ACTIVE_TIMER,
-        payload: timer
+        type: t.STOP_ACTIVE_TIMER
     }
 }
 

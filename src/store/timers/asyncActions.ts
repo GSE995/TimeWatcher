@@ -57,9 +57,12 @@ const startTimer = (timer: Timer): any => {
     return async (dispatch: Dispatch, getState: GetAppState) => {
         dispatch(actions.timerRequest())
         let timerState = getState().timer
+        
         try {
             if (timerState.activeTimer) {
-                const activeTimerResult = await TimerService.save(timerState.activeTimer)
+                let activeTimer: Timer = timerState.activeTimer
+                activeTimer.endDate = new Date()
+                const activeTimerResult = await TimerService.save(activeTimer)
                 dispatch(actions.addTimer(activeTimerResult))
             }
 
@@ -86,10 +89,10 @@ const changeActiveTimer = (timer: Timer): any => {
 
 const stopTimer = (timer: Timer): any => {
     return async (dispatch: Dispatch) => {
-        dispatch(actions.timerRequest())
+        dispatch(actions.stopTimer())
         try {
             let result = await TimerService.save(timer)
-            dispatch(actions.stopTimer(result))
+            dispatch(actions.addTimer(result))
         } catch (error) {
             dispatch(actions.timerRequestFailure(error))
         }
