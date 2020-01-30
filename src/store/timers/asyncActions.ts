@@ -58,8 +58,18 @@ const removeTimer = (timer: Timer): any => {
 }
 
 const startTimer = (timer: Timer): any => {
-    return async (dispatch: Dispatch) => {
+    return async (dispatch: Dispatch, getState: Function) => {
         dispatch(actions.timerRequest())
+        let timerState = getState().timer
+
+        if(timerState.activeTimer){
+            let activeTimerResult = await TimerService.save(timerState.activeTimer)
+            activeTimerResult
+                .ifSuccess((data: Timer) => dispatch(actions.addTimer(data)))
+                .ifFailure((message: string) =>
+                    dispatch(actions.timerRequestFailure(message))
+                )
+        }
         const result = await TimerService.create(timer)
         result
             .ifSuccess((data: Timer) => dispatch(actions.startTimer(data)))
