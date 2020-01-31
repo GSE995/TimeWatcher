@@ -25,7 +25,7 @@ const reducer: Reducer<TimerState, TimerAction> = ( state = initialState, {type,
                 ...state,
                 isLoading: false,
                 timers: payload.data.filter((el: Timer) => el.endDate),
-                activeTimer: payload.data.filter((el: Timer) => !el.endDate)[0],
+                activeTimer: payload.data.filter((el: Timer) => !el.endDate)[0] || null,
                 timerTotal: payload.total,
             }
         case t.ADD_TIMER:

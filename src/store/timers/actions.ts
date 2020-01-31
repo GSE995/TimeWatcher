@@ -46,7 +46,7 @@ function changeActiveTimer(timer: Timer) {
 
 function removeTimer(timerId: string) {
     return {
-        type: t.CHANGE_TIMER,
+        type: t.REMOVE_TIMER,
         payload: timerId,
     }
 }

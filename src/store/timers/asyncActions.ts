@@ -41,12 +41,12 @@ const changeTimer = (timer: Timer): any => {
     }
 }
 
-const removeTimer = (timer: Timer): any => {
+const removeTimer = (id: string): any => {
     return async (dispatch: Dispatch) => {
         dispatch(actions.timerRequest())
         try {
-            await TimerService.remove(timer.id)
-            dispatch(actions.removeTimer(timer.id))
+            await TimerService.remove(id)
+            dispatch(actions.removeTimer(id))
         } catch (error) {
             dispatch(actions.timerRequestFailure(error))
         }
