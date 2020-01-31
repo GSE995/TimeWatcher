@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Timer } from '../../models'
 import { useDispatch } from 'react-redux'
 import styled from 'styled-components'
@@ -31,9 +31,10 @@ const TimerNameField = styled.input`
     }
 `
 
-const PlayButton = styled.button`
+const Button = styled.button`
     padding-right: 20px;
     background-color: #fff;
+    width: 30px;
     ${TimerCardContent}:hover & {
         background-color: ${hoverCardBackground};
     }
@@ -49,18 +50,50 @@ const TimerValue = styled.div`
     }
 `
 
+const CheckboxWrapper = styled.div`
+    line-height: 40px;
+    ${TimerCardContent}:hover & {
+        background-color: ${hoverCardBackground};
+    }
+`
+
 const Icon = styled.i((props: any) => ({
     'font-size': props.size,
     color: props.color
 }))
 
-type TimerCardProps = { timer: Timer }
+type TimerCardProps = { 
+    timer: Timer, 
+    isChecked: boolean 
+}
 
 function TimerCard(props: TimerCardProps) {
     let dispatch = useDispatch()
     let [timerName, setTimerName] = useState(props.timer.name)
+    let [checked, setChecked] = useState<boolean>(props.isChecked)
+
+    useEffect(() => {setChecked(props.isChecked)}, [props.isChecked])
+
+    return (
+        <TimerCardContent>
+            <CheckboxWrapper>
+                <input type="checkbox" checked={checked} onChange={onChecked} name={props.timer.id}/>
+            </CheckboxWrapper>
+            <TimerNameField value={timerName} onChange={changeTimerName} />
+            <Spacer />
+            <TimerValue>{getDisplayTimerValue(props.timer.getValue())}</TimerValue>
+            <Button onClick={playHandler}>
+                <Icon className="fas fa-play" color="rgb(56, 156, 56)" />
+            </Button>
+            <Button onClick={onRemove}>
+                <Icon className="far fa-trash-alt" color="#ed7474" />
+            </Button>
+        </TimerCardContent>
+    )
 
     function changeTimerName(e: React.ChangeEvent<HTMLInputElement>) {
+        e.stopPropagation()
+
         setTimerName(e.currentTarget.value)
         let timer = props.timer
         timer.name = e.currentTarget.value
@@ -72,18 +105,13 @@ function TimerCard(props: TimerCardProps) {
         dispatch(asyncActions.startTimer(timer))
     }
 
-    let displayTimerValue = getDisplayTimerValue(props.timer.getValue())
+    function onRemove(){
+        dispatch(asyncActions.removeTimer(props.timer.id))
+    }
 
-    return (
-        <TimerCardContent>
-            <TimerNameField value={timerName} onChange={changeTimerName} />
-            <Spacer />
-            <TimerValue>{displayTimerValue}</TimerValue>
-            <PlayButton onClick={playHandler}>
-                <Icon className="fas fa-play" color="rgb(56, 156, 56)" />
-            </PlayButton>
-        </TimerCardContent>
-    )
+    function onChecked(e: any){
+        setChecked(e.currentTarget.checked)
+    }
 }
 
 export default TimerCard

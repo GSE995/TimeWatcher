@@ -27,10 +27,10 @@ export default class Timer {
         return new Date(diff)
     }
 
-    static copy(timer: Timer) {
-        let copy = new Timer(timer.name)
-        copy.endDate = timer.endDate ? new Date(timer.endDate) : null
-        copy.startDate = new Date(timer.startDate)
+    public copy() {
+        let copy = new Timer(this.name)
+        copy.endDate = this.endDate && new Date(+this.endDate)
+        copy.startDate = new Date(this.startDate)
         return copy
     }
 
