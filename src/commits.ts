@@ -1,4 +1,4 @@
-export const d = 1
+export const d = 1;
 // commit one
-// commit two 
+// commit two
 // commit three

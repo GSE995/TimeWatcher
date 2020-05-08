@@ -1,182 +1,182 @@
-import reducer, { initialState, TimerState } from './reducer'
-import * as t from './actionTypes'
-import { Timer, PageSize } from '../../models'
-import ListResult from '../../models/ListResult'
+import reducer, { initialState, TimerState } from './reducer';
+import * as t from './actionTypes';
+import { Timer, PageSize } from '../../models';
+import ListResult from '../../models/ListResult';
 
 describe('timers reducer', () => {
-    it('Load timers', () => {
-        const action = {
-            type: t.TIMER_LOADING,
-            payload: true
-        }
+  it('Load timers', () => {
+    const action = {
+      type: t.TIMER_LOADING,
+      payload: true,
+    };
 
-        expect(reducer(initialState, action)).toEqual({
-            ...initialState,
-            isLoading: true
-        })
-    })
+    expect(reducer(initialState, action)).toEqual({
+      ...initialState,
+      isLoading: true,
+    });
+  });
 
-    it('Failure request', () => {
-        const stateAfteLoading = {
-            ...initialState,
-            isLoading: true
-        }
+  it('Failure request', () => {
+    const stateAfteLoading = {
+      ...initialState,
+      isLoading: true,
+    };
 
-        const action = {
-            type: t.TIMER_FAILURE_REQUEST,
-            payload: 'not found'
-        }
+    const action = {
+      type: t.TIMER_FAILURE_REQUEST,
+      payload: 'not found',
+    };
 
-        expect(reducer(stateAfteLoading, action)).toEqual({
-            ...initialState,
-            isLoading: false,
-            errorMsg: action.payload
-        })
-    })
+    expect(reducer(stateAfteLoading, action)).toEqual({
+      ...initialState,
+      isLoading: false,
+      errorMsg: action.payload,
+    });
+  });
 
-    it('Fetch timers', () => {
-        let pageSize = new PageSize(0, 10)
-        let timer = new Timer()
-        timer.endDate = new Date()
-        let listResult = new ListResult<Timer>([timer], 2, pageSize)
+  it('Fetch timers', () => {
+    let pageSize = new PageSize(0, 10);
+    let timer = new Timer();
+    timer.endDate = new Date();
+    let listResult = new ListResult<Timer>([timer], 2, pageSize);
 
-        const action = {
-            type: t.FETCH_TIMERS_SUCCESS,
-            payload: listResult
-        }
+    const action = {
+      type: t.FETCH_TIMERS_SUCCESS,
+      payload: listResult,
+    };
 
-        expect(reducer(initialState, action)).toEqual({
-            ...initialState,
-            isLoading: false,
-            timers: [timer],
-            timerTotal: 2
-        })
-    })
+    expect(reducer(initialState, action)).toEqual({
+      ...initialState,
+      isLoading: false,
+      timers: [timer],
+      timerTotal: 2,
+    });
+  });
 
-    it('Fetch timers with active timer', () => {
-        let pageSize = new PageSize(0, 10)
-        let timer = new Timer()
-        timer.endDate = new Date()
-        let activeTimer = new Timer()
-        let listResult = new ListResult<Timer>([activeTimer, timer], 2, pageSize)
-        
-        const action = {
-            type: t.FETCH_TIMERS_SUCCESS,
-            payload: listResult
-        }
+  it('Fetch timers with active timer', () => {
+    let pageSize = new PageSize(0, 10);
+    let timer = new Timer();
+    timer.endDate = new Date();
+    let activeTimer = new Timer();
+    let listResult = new ListResult<Timer>([activeTimer, timer], 2, pageSize);
 
-        expect(reducer(initialState, action)).toEqual({
-            ...initialState,
-            isLoading: false,
-            timers: [timer],
-            activeTimer: activeTimer,
-            timerTotal: 2
-        })
-    })
+    const action = {
+      type: t.FETCH_TIMERS_SUCCESS,
+      payload: listResult,
+    };
 
-    it('Add timer', () => {
-        let timer = new Timer('')
+    expect(reducer(initialState, action)).toEqual({
+      ...initialState,
+      isLoading: false,
+      timers: [timer],
+      activeTimer: activeTimer,
+      timerTotal: 2,
+    });
+  });
 
-        const action = {
-            type: t.ADD_TIMER,
-            payload: timer
-        }
+  it('Add timer', () => {
+    let timer = new Timer('');
 
-        expect(reducer(initialState, action)).toEqual({
-            ...initialState,
-            timers: [timer]
-        })
-    })
+    const action = {
+      type: t.ADD_TIMER,
+      payload: timer,
+    };
 
-    it('Change timer', () => {
-        let timer = new Timer('')
+    expect(reducer(initialState, action)).toEqual({
+      ...initialState,
+      timers: [timer],
+    });
+  });
 
-        const stateBefore = {
-            ...initialState,
-            timers: [timer.copy()]
-        }
+  it('Change timer', () => {
+    let timer = new Timer('');
 
-        timer.name = 'test'
+    const stateBefore = {
+      ...initialState,
+      timers: [timer.copy()],
+    };
 
-        const action = {
-            type: t.CHANGE_TIMER,
-            payload: timer
-        }
+    timer.name = 'test';
 
-        expect(reducer(stateBefore, action)).toEqual({
-            ...initialState,
-            timers: [timer]
-        })
-    })
+    const action = {
+      type: t.CHANGE_TIMER,
+      payload: timer,
+    };
 
-    it('Remove timer', () => {
-        let timer = new Timer('')
-        timer.id = '123'
+    expect(reducer(stateBefore, action)).toEqual({
+      ...initialState,
+      timers: [timer],
+    });
+  });
 
-        const stateBefore = {
-            ...initialState,
-            timers: [timer]
-        }
+  it('Remove timer', () => {
+    let timer = new Timer('');
+    timer.id = '123';
 
-        const action = {
-            type: t.REMOVE_TIMER,
-            payload: timer.id
-        }
+    const stateBefore = {
+      ...initialState,
+      timers: [timer],
+    };
 
-        expect(reducer(stateBefore, action)).toEqual({
-            ...initialState,
-            timers: []
-        })
-    })
+    const action = {
+      type: t.REMOVE_TIMER,
+      payload: timer.id,
+    };
 
-    it('Start timer', () => {
-        let timer = new Timer('')
-        timer.id = '123'
+    expect(reducer(stateBefore, action)).toEqual({
+      ...initialState,
+      timers: [],
+    });
+  });
 
-        const action = {
-            type: t.ACTIVATE_TIMER,
-            payload: timer
-        }
+  it('Start timer', () => {
+    let timer = new Timer('');
+    timer.id = '123';
 
-        expect(reducer(initialState, action)).toEqual({
-            ...initialState,
-            activeTimer: timer
-        })
-    })
+    const action = {
+      type: t.ACTIVATE_TIMER,
+      payload: timer,
+    };
 
-    it('Stop timer', () => {
-        let timer = new Timer('')
-        timer.id = '123'
+    expect(reducer(initialState, action)).toEqual({
+      ...initialState,
+      activeTimer: timer,
+    });
+  });
 
-        const action = {
-            type: t.STOP_ACTIVE_TIMER,
-            payload: null
-        }
+  it('Stop timer', () => {
+    let timer = new Timer('');
+    timer.id = '123';
 
-        expect(reducer(initialState, action)).toEqual({
-            ...initialState,
-            activeTimer: null
-        })
-    })
+    const action = {
+      type: t.STOP_ACTIVE_TIMER,
+      payload: null,
+    };
 
-    it('Change active timer', () => {
-        let timer = new Timer('')
+    expect(reducer(initialState, action)).toEqual({
+      ...initialState,
+      activeTimer: null,
+    });
+  });
 
-        const stateBefore = {
-            ...initialState,
-            activeTimer: timer
-        }
+  it('Change active timer', () => {
+    let timer = new Timer('');
 
-        timer.name = 'test'
+    const stateBefore = {
+      ...initialState,
+      activeTimer: timer,
+    };
 
-        const action = {
-            type: t.CHANGE_ACTIVE_TIMER,
-            payload: timer
-        }
+    timer.name = 'test';
 
-        expect(reducer(stateBefore, action)).toEqual({
-            ...initialState,
-            activeTimer: timer
-        })
-    })
-})
+    const action = {
+      type: t.CHANGE_ACTIVE_TIMER,
+      payload: timer,
+    };
+
+    expect(reducer(stateBefore, action)).toEqual({
+      ...initialState,
+      activeTimer: timer,
+    });
+  });
+});
