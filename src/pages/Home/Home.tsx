@@ -1,18 +1,14 @@
 import React from 'react'
-import {ErrorBoundary} from '../../common/ErrorBoundary'
+import { ErrorBoundary } from '../../common/ErrorBoundary'
 
-function Home(props: any){
-    return (
-        <div>Home</div>
-    )
+function Home(props: any) {
+  return <div>Home</div>
 }
 
 export default () => {
-    return (
-        <ErrorBoundary>
-            <Home></Home>
-        </ErrorBoundary>
-    )
+  return (
+    <ErrorBoundary>
+      <Home></Home>F
+    </ErrorBoundary>
+  )
 }
-
-

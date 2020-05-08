@@ -1,11 +1,10 @@
-import { ReactElement, ReactNode } from "react";
+import { ReactElement, ReactNode } from 'react'
 
 export type Route = {
-    id: number
-    text: string
-    icon: string
-    path: string
-    component: ReactNode
-    exact: boolean
+  id: number
+  text: string
+  icon: string
+  path: string
+  component: ReactNode
+  exact: boolean
 }
-

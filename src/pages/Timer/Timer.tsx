@@ -9,41 +9,39 @@ import { TimerCard, ActiveTimerTool } from '../../components'
 import { Timer, PageSize } from '../../models'
 
 function useTimers(pageSize: PageSize) {
-    let dispatch = useDispatch()
-    let timers = useSelector((state: any) => state.timer.timers)
+  let dispatch = useDispatch()
+  let timers = useSelector((state: any) => state.timer.timers)
 
-    useEffect(() => {
-        dispatch(fetchTimers(pageSize))
-    }, [])
+  useEffect(() => {
+    dispatch(fetchTimers(pageSize))
+  }, [])
 
-    return timers
+  return timers
 }
 
 function useActiveTimer() {
-    return useSelector((state: AppState) => state.timer.activeTimer)
+  return useSelector((state: AppState) => state.timer.activeTimer)
 }
 
 function getTimerCards(timers: Timer[], onStartTimer: Function) {
-    return timers.map((el: Timer) => (
-        <TimerCard timer={el} key={el.id} />
-    ))
+  return timers.map((el: Timer) => <TimerCard timer={el} key={el.id} />)
 }
 
 const TimerPage = () => {
-    let dispatch = useDispatch()
-    let timers = useTimers(new PageSize(0, 10))
-    let activeTimer = useActiveTimer()
+  let dispatch = useDispatch()
+  let timers = useTimers(new PageSize(0, 10))
+  let activeTimer = useActiveTimer()
 
-    function onStartTimer(timer: Timer) {
-        dispatch(startTimer(timer))
-    }
+  function onStartTimer(timer: Timer) {
+    dispatch(startTimer(timer))
+  }
 
-    return (
-        <div>
-            <ActiveTimerTool />
-            {getTimerCards(timers, onStartTimer)}
-        </div>
-    )
+  return (
+    <div>
+      <ActiveTimerTool />
+      {getTimerCards(timers, onStartTimer)}
+    </div>
+  )
 }
 
 export default TimerPage
