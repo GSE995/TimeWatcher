@@ -1,5 +1,5 @@
 import Home from './pages/Home/Home';
-import Timer from './pages/Timer/Timer';
+import { TimerPage } from './pages/Timer/Timer';
 
 const routes = [
   {
@@ -15,7 +15,7 @@ const routes = [
     text: 'Timer',
     icon: 'timer',
     path: '/timer',
-    component: Timer,
+    component: TimerPage,
     exact: false,
   },
 ];

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useReducer } from 'react';
+import React, { useState, useRef, useEffect, useReducer, FC } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import AuthService from '../../services/AuthService';
@@ -50,7 +50,7 @@ let initialState = {
   password: '',
 };
 
-const Auth: React.FC<any> = () => {
+export const Auth: FC = () => {
   // let dispatch = useDispatch()
   const [state, dispatch] = useReducer(AuthReducer, initialState);
 
@@ -171,5 +171,3 @@ const Auth: React.FC<any> = () => {
     </Container>
   );
 };
-
-export default Auth;
