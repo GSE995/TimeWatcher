@@ -1,4 +1,4 @@
-import TimerService from '../../services/TimersService';
+import TimerService from '../../services/TimerServiceFirebase';
 import Timer from '../../models/Timer';
 import { Dispatch } from 'redux';
 import * as actions from './actions';

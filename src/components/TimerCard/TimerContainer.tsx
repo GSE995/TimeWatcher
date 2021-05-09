@@ -4,7 +4,7 @@ import TimerCard from './TimerCard';
 import { getDisplayTimerValue } from '../../utils/timer';
 import styled from 'styled-components';
 import moment from 'moment';
-import GroupCardInfo from './GroupCardInfo';
+import { GroupCardInfo } from './GroupCardInfo';
 
 const TimerCardsWrapper = styled.div`
   box-shadow: rgba(0, 0, 0, 0.13) 0px 2px 6px 0px;

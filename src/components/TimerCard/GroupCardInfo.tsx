@@ -1,12 +1,6 @@
-import React from 'react';
+import React, { FC } from 'react';
 import styled from 'styled-components';
 import moment from 'moment';
-
-type GroupCardInfo = {
-  generalTime: string;
-  date: Date;
-  checkedCount: number;
-};
 
 const GroupInfoWrapper = styled.div`
   display: flex;
@@ -35,19 +29,23 @@ const Spacer = styled.div`
   flex-grow: 1;
 `;
 
-function GroupCardInfo(props: GroupCardInfo) {
-  let dateFormat = moment(props.date).format('YYYY/MM/DD');
+interface GroupCardInfoProps {
+  generalTime: string;
+  date: Date;
+  checkedCount: number;
+};
+
+export const GroupCardInfo: FC<GroupCardInfoProps> = ({date, checkedCount, generalTime }) => {
+  let dateFormat = moment(date).format('YYYY/MM/DD');
   return (
     <GroupInfoWrapper>
       <GeneralDate>{dateFormat}</GeneralDate>
-      <SelectedInfo>Selected items: {props.checkedCount}</SelectedInfo>
-      <button style={{ color: 'dark', marginLeft: '20px' }} disabled={!props.checkedCount}>
+      <SelectedInfo>Selected items: {checkedCount}</SelectedInfo>
+      <button style={{ color: 'dark', marginLeft: '20px' }} disabled={!checkedCount}>
         Delete
       </button>
       <Spacer />
-      <GeneralTime>{props.generalTime}</GeneralTime>
+      <GeneralTime>{generalTime}</GeneralTime>
     </GroupInfoWrapper>
   );
 }
-
-export default GroupCardInfo;

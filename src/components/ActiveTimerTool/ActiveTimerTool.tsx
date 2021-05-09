@@ -46,7 +46,7 @@ class ActiveTimerTool extends Component<ActiveTimerToolProps, ActiveTimerToolSta
     let timer = this.props.activeTimer || new Timer(this.state.timerName);
 
     this.setState({
-      intervalID: setInterval(() => this.tick(), 1000),
+      intervalID: setInterval(() => this.tick(), 1000) as any,
       timerValue: tickTime(timer.getValue()),
       timerName: timer.name,
       timerId: timer.id,
@@ -94,7 +94,7 @@ class ActiveTimerTool extends Component<ActiveTimerToolProps, ActiveTimerToolSta
 
   componentDidUpdate() {
     let { activeTimer } = this.props;
-    if (activeTimer && activeTimer.id != this.state.timerId) {
+    if (activeTimer && activeTimer.id !== this.state.timerId) {
       this.startTimer();
     }
   }

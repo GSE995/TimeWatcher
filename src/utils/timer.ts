@@ -28,7 +28,7 @@ function isEqualName(TimerOne: Timer, TimerTwo: Timer): boolean {
 }
 
 function groupBy(array: Array<Timer>, isEqual: Function): Array<Timer[]> {
-  if (array.length == 0) return [array];
+  if (array.length === 0) return [array];
 
   let prev = [array[0]];
   let ordered = [];
