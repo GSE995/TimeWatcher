@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { Timer } from '../../models';
 import { getDisplayTimerValue } from '../../utils/timer';
 import * as asyncActions from '../../store/timers/asyncActions';
+import { getTimerValue } from '../../models/Timer';
 
 const hoverCardBackground = 'rgb(248, 247, 247)';
 
@@ -67,47 +68,44 @@ export interface TimerCardProps {
   isChecked: boolean;
 }
 
-export const TimerCard: FC<TimerCardProps> = (props: TimerCardProps) => {
+export const TimerCard: FC<TimerCardProps> = ({timer, isChecked}) => {
   let dispatch = useDispatch();
-  let [timerName, setTimerName] = useState(props.timer.name);
-  let [checked, setChecked] = useState<boolean>(props.isChecked);
+  let [timerName, setTimerName] = useState(timer.name);
+  let [checked, setChecked] = useState<boolean>(isChecked);
 
-  const changeTimerName = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+  const changeTimerName = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
       e.stopPropagation();
 
       setTimerName(e.currentTarget.value);
-      let timer = props.timer;
-      timer.name = e.currentTarget.value;
-      dispatch(asyncActions.changeTimer(timer));
+      dispatch(asyncActions.changeTimer({...timer, name: e.currentTarget.value }));
     },
-    [dispatch, props.timer]
+    [dispatch, timer]
   );
 
   const playHandler = useCallback(() => {
-    let timer = new Timer(props.timer.name);
-    dispatch(asyncActions.startTimer(timer));
-  }, [dispatch, props.timer.name]);
+    let newTimer: Timer = {id: '', name: timer.name, startDate: new Date() };
+    dispatch(asyncActions.startTimer(newTimer));
+  }, [dispatch, timer.name]);
 
   const onRemove = useCallback(() => {
-      dispatch(asyncActions.removeTimer(props.timer.id));
-    },
-    [dispatch, props.timer.id]
-  );
+    dispatch(asyncActions.removeTimer(timer.id));
+  }, [dispatch, timer.id]);
 
   const onChecked = useCallback((e: any) => setChecked(e.currentTarget.checked), []);
 
   useEffect(() => {
-    setChecked(props.isChecked);
-  }, [props.isChecked]);
+    setChecked(isChecked);
+  }, [isChecked]);
 
   return (
     <TimerCardContent>
       <CheckboxWrapper>
-        <input type="checkbox" checked={checked} onChange={onChecked} name={props.timer.id} />
+        <input type="checkbox" checked={checked} onChange={onChecked} name={timer.id} />
       </CheckboxWrapper>
       <TimerNameField value={timerName} onChange={changeTimerName} />
       <Spacer />
-      <TimerValue>{getDisplayTimerValue(props.timer.getValue())}</TimerValue>
+      <TimerValue>{getDisplayTimerValue(getTimerValue(timer))}</TimerValue>
       <Button onClick={playHandler}>
         <Icon className="fas fa-play" color="rgb(56, 156, 56)" />
       </Button>

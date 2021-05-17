@@ -5,6 +5,7 @@ import { getDisplayTimerValue } from '../../utils/timer';
 import styled from 'styled-components';
 import moment from 'moment';
 import { GroupCardInfo } from '../GroupCardInfo/GroupCardInfo';
+import { getTimerValue } from '../../models/Timer';
 
 const TimerCardsWrapper = styled.div`
   box-shadow: rgba(0, 0, 0, 0.13) 0px 2px 6px 0px;
@@ -18,7 +19,7 @@ const initialState = {
 };
 
 function countTime(array: Timer[]) {
-  let result = array.reduce((prev, curr) => prev + +curr.getValue(), 0);
+  let result = array.reduce((prev, curr) => prev + +getTimerValue(curr), 0);
   return getDisplayTimerValue(new Date(result));
 }
 
@@ -31,7 +32,7 @@ export interface TimerContainerProps {
   timers: Timer[];
 }
 
-export const TimersBlock: FC<TimerContainerProps> = ({timers}) => {
+export const TimersBlock: FC<TimerContainerProps> = ({ timers }) => {
   let [state, setState] = useState<TimerContainerState>(initialState);
   let checkedTimers = useRef<any>({});
 
@@ -78,7 +79,7 @@ export const TimersBlock: FC<TimerContainerProps> = ({timers}) => {
         <div>
           <input type="checkbox" checked={state.checked} onChange={onCheckChange} />
         </div>
-        <GroupCardInfo generalTime={generalTime} date={timers[0].startDate} checkedCount={state.checkedCount} />
+        <GroupCardInfo generalTime={generalTime} date={timers[0].startDate!} checkedCount={state.checkedCount} />
       </div>
       <div onChange={onCheckTimer}>
         {timers.map((el: Timer) => (

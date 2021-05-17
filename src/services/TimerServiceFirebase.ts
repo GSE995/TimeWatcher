@@ -13,9 +13,14 @@ const API_ROOT_URL = '/api/timer';
 export { API_ROOT_URL };
 
 // service for work with firebase
-export default class TimersServie<T> {
+export default class TimersService {
   static async get(id: number): Promise<ListResult<Timer>> {
     const res: any = await collection.doc(id.toString()).get();
+    let serverTimer = new Timer(res.name);
+    serverTimer.startDate = res.startDate;
+    serverTimer.endDate = res.endDate;
+    serverTimer.id = res.id;
+
     return res;
   }
 
@@ -25,11 +30,12 @@ export default class TimersServie<T> {
       endDate: timer.endDate || null,
       startDate: timer.startDate,
     };
+    console.log(timerForSave);
     let docRef: any = await collection.add(timerForSave);
     let serverTimer = new Timer(timer.name);
     serverTimer.startDate = timer.startDate;
     serverTimer.id = docRef.id;
-
+    console.log(serverTimer);
     return serverTimer;
   }
 
@@ -40,6 +46,12 @@ export default class TimersServie<T> {
       startDate: timer.startDate,
     };
     await collection.doc(timer.id).update(timerForSave);
+
+    let serverTimer = new Timer(timer.name);
+    serverTimer.startDate = timer.startDate;
+    serverTimer.endDate = timer.endDate;
+    serverTimer.id = timer.id;
+
     return timer;
   }
 
@@ -50,7 +62,7 @@ export default class TimersServie<T> {
 
   static async getList(pageSize: PageSize): Promise<ListResult<Timer>> {
     let querySnapshot = await collection.orderBy('endDate', 'desc').get();
-    let timers: any = [];
+    let timers: Timer[] = [];
 
     querySnapshot.forEach(doc => {
       let data = doc.data();
