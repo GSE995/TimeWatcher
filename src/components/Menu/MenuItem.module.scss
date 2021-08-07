@@ -1,0 +1,38 @@
+.menuItem {
+  width: 100%;
+  height: 40px;
+  display: flex;
+
+  a {
+    text-decoration: none;
+    color: #fff;
+    width: 100%;
+    display: flex;
+  }
+
+  .itemText {
+    font-size: 14px;
+    height: 100%;
+    line-height: 40px;
+  }
+
+  .indicator {
+    width: 3px;
+    height: 100%;
+  }
+
+  .icon {
+    width: 20px;
+    height: 100%;
+  }
+
+  &:hover {
+    .indicator {
+      background-color: rgb(209, 133, 133);
+    }
+
+    .itemText {
+      color: grey;
+    }
+  }
+}

@@ -2,7 +2,7 @@ import React, { useEffect, Fragment, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { fetchTimers } from '../../store/timers/asyncActions';
-import { Tool, TimersBlock } from '../../components';
+import { ActiveTimerTool, TimersBlock } from '../../components';
 import { PageSize, Timer } from '../../models';
 import { groupByDate } from '../../utils/timer';
 
@@ -24,14 +24,14 @@ export const TimerPage = () => {
   let timers = useTimers(new PageSize(0, 10));
   let timer = useSelector((state: any) => state.timer.activeTimer || new Timer());
 
-  let groupped = useMemo(() => groupByDate(timers, 'endDate'), [timers]);
+  let grouped = useMemo(() => groupByDate(timers, 'endDate'), [timers]);
 
   if (timers.length === 0) return <></>;
 
   return (
     <Fragment>
-      <Tool timer={timer} />
-      {groupped.map(el => (
+      <ActiveTimerTool timer={timer} />
+      {grouped.map(el => (
         <TimersBlock timers={el} key={+el[0].startDate!} />
       ))}
     </Fragment>

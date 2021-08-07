@@ -1,32 +1,22 @@
-import React from 'react';
 import { Switch, Route } from 'react-router-dom';
-import styled from 'styled-components';
 import { ErrorBoundary } from './common/ErrorBoundary';
 
-import Menu from './components/Menu/Menu';
+import { Menu } from './components/Menu/Menu';
 import routes from './routes';
 
-const AppContainer = styled.div`
-  height: 100%;
-  display: flex;
-`;
-const PageWrapper = styled.div`
-  flex-grow: 1;
-`;
+import css from './App.module.scss';
 
-function App() {
+export const App = () => {
   const routeComponents = routes.map(el => <Route {...el} />);
 
   return (
-    <AppContainer>
+    <div className={css.root}>
       <Menu routes={routes} />
-      <PageWrapper>
+      <div>
         <ErrorBoundary>
           <Switch>{routeComponents}</Switch>
         </ErrorBoundary>
-      </PageWrapper>
-    </AppContainer>
+      </div>
+    </div>
   );
-}
-
-export default App;
+};

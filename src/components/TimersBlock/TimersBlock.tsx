@@ -1,39 +1,29 @@
 import React, { useState, useRef, FC, useCallback } from 'react';
+
 import { Timer } from '../../models';
 import { TimerCard } from '../TimerCard/TimerCard';
 import { getDisplayTimerValue } from '../../utils/timer';
-import styled from 'styled-components';
-import moment from 'moment';
 import { GroupCardInfo } from '../GroupCardInfo/GroupCardInfo';
 import { getTimerValue } from '../../models/Timer';
 
-const TimerCardsWrapper = styled.div`
-  box-shadow: rgba(0, 0, 0, 0.13) 0px 2px 6px 0px;
-  padding: 10px 0;
-  margin-bottom: 20px;
-`;
+import css from './TimersBlock.module.scss';
 
 const initialState = {
   checked: false,
   checkedCount: 0,
 };
 
-function countTime(array: Timer[]) {
-  let result = array.reduce((prev, curr) => prev + +getTimerValue(curr), 0);
-  return getDisplayTimerValue(new Date(result));
-}
-
-interface TimerContainerState {
+export interface TimersBlockState {
   checked: boolean;
   checkedCount: number;
 }
 
-export interface TimerContainerProps {
+export interface TimersBlockProps {
   timers: Timer[];
 }
 
-export const TimersBlock: FC<TimerContainerProps> = ({ timers }) => {
-  let [state, setState] = useState<TimerContainerState>(initialState);
+export const TimersBlock: FC<TimersBlockProps> = ({ timers }) => {
+  let [state, setState] = useState<TimersBlockState>(initialState);
   let checkedTimers = useRef<any>({});
 
   let generalTime = countTime(timers);
@@ -74,7 +64,7 @@ export const TimersBlock: FC<TimerContainerProps> = ({ timers }) => {
   );
 
   return (
-    <TimerCardsWrapper>
+    <div className={css.root}>
       <div style={{ display: 'flex' }}>
         <div>
           <input type="checkbox" checked={state.checked} onChange={onCheckChange} />
@@ -86,6 +76,11 @@ export const TimersBlock: FC<TimerContainerProps> = ({ timers }) => {
           <TimerCard timer={el} key={el.id} isChecked={Boolean(checkedTimers.current[el.id])} />
         ))}
       </div>
-    </TimerCardsWrapper>
+    </div>
   );
 };
+
+function countTime(array: Timer[]) {
+  let result = array.reduce((prev, curr) => prev + +getTimerValue(curr), 0);
+  return getDisplayTimerValue(new Date(result));
+}

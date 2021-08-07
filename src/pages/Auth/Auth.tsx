@@ -1,44 +1,11 @@
-import React, { useState, useRef, useEffect, useReducer, FC } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import styled from 'styled-components';
-import AuthService from '../../services/AuthService';
+import { useReducer, FC } from 'react';
 import { Redirect } from 'react-router-dom';
-import AuthReducer from './reducer';
 
+import AuthService from '../../services/AuthService';
+import AuthReducer from './reducer';
 import User from '../../models/User';
 
-const Container = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  width: 100%;
-  background-color: #272726;
-`;
-
-const Form = styled.form`
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  padding: 20px;
-  min-width: 300px;
-  max-width: 300px;
-  background-color: #fff;
-  border-radius: 2px;
-  min-height: 200px;
-`;
-
-const TextField = styled.input`
-  margin-bottom: 10px;
-  height: 30px;
-  width: 100%;
-`;
-
-const ErrorBaner = styled.div`
-  background-color: #eab8b8;
-`;
-
-const SuccessBaner = styled.div`
-  background-color: rgb(83, 165, 66);
-`;
+import css from './Auth.module.scss';
 
 let initialState = {
   loading: false,
@@ -86,15 +53,16 @@ export const Auth: FC = () => {
   if (state.isAuth) return <Redirect to={window.location.pathname} />;
 
   return (
-    <Container>
-      <Form action="">
+    <div className={css.root}>
+      <form action="">
         <div>
           <label htmlFor="login_input" style={{ display: 'block' }}>
             Login/Email
           </label>
-          <TextField
+          <input
             id="login_input"
             type="text"
+            className={css.textField}
             onChange={e => {
               dispatch({
                 type: 'CHANGE_EMAIL',
@@ -108,8 +76,9 @@ export const Auth: FC = () => {
           <label htmlFor="password_input" style={{ display: 'block' }}>
             Password
           </label>
-          <TextField
+          <input
             id="password_input"
+            className={css.textField}
             onChange={e => {
               dispatch({
                 type: 'CHANGE_PASSWORD',
@@ -135,39 +104,21 @@ export const Auth: FC = () => {
           <label htmlFor="isShowPassword">Show password</label>
         </div>
 
-        <ErrorBaner>{state.errorMessage}</ErrorBaner>
-        <SuccessBaner>{state.successMessage}</SuccessBaner>
+        <div className={css.errorBanner}>{state.errorMessage}</div>
+        <div className={css.successBanner}>{state.successMessage}</div>
 
-        <div
-          style={{
-            marginTop: '15px',
-            display: 'flex',
-            justifyContent: 'center',
-          }}
-        >
-          <button
-            onClick={signUp}
-            style={{
-              padding: '5px 10px',
-              marginRight: '10px',
-            }}
-          >
+        <div className={css.actions}>
+          <button className={css.signIn} onClick={signUp}>
             Sign Up
           </button>
 
-          <button
-            onClick={signIn}
-            style={{
-              backgroundColor: '#df8979',
-              padding: '5px 10px',
-            }}
-          >
+          <button className={css.signUp} onClick={signIn}>
             Sign In
           </button>
         </div>
 
         <div></div>
-      </Form>
-    </Container>
+      </form>
+    </div>
   );
 };

@@ -1,51 +1,23 @@
-import React, { FC } from 'react';
-import styled from 'styled-components';
+import { FC } from 'react';
 import moment from 'moment';
 
-const GroupInfoWrapper = styled.div`
-  display: flex;
-  width: 100%;
-  padding-bottom: 10px;
-`;
+import css from './GroupCardInfo.module.scss';
 
-const GeneralDate = styled.div`
-  margin-left: 10px;
-  font-weight: bold;
-  font-size: 18px;
-`;
-
-const GeneralTime = styled.div`
-  margin-right: 85px;
-  font-weight: bold;
-  font-size: 18px;
-`;
-
-const SelectedInfo = styled.div`
-  font-size: 18px;
-  margin-left: 20px;
-`;
-
-const Spacer = styled.div`
-  flex-grow: 1;
-`;
-
-interface GroupCardInfoProps {
+export interface GroupCardInfoProps {
   generalTime: string;
   date: Date;
   checkedCount: number;
-};
+}
 
-export const GroupCardInfo: FC<GroupCardInfoProps> = ({date, checkedCount, generalTime }) => {
+export const GroupCardInfo: FC<GroupCardInfoProps> = ({ date, checkedCount, generalTime }) => {
   let dateFormat = moment(date).format('YYYY/MM/DD');
   return (
-    <GroupInfoWrapper>
-      <GeneralDate>{dateFormat}</GeneralDate>
-      <SelectedInfo>Selected items: {checkedCount}</SelectedInfo>
-      <button style={{ color: 'dark', marginLeft: '20px' }} disabled={!checkedCount}>
-        Delete
-      </button>
-      <Spacer />
-      <GeneralTime>{generalTime}</GeneralTime>
-    </GroupInfoWrapper>
+    <div className={css.root}>
+      <div className={css.generalDate}>{dateFormat}</div>
+      <div className={css.selectedInfo}>Selected items: {checkedCount}</div>
+      <button disabled={!checkedCount}>Delete</button>
+      <div className={css.spacer}></div>
+      <div className={css.generalTime}>{generalTime}</div>
+    </div>
   );
-}
+};
