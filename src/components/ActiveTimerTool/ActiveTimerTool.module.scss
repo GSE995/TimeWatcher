@@ -27,6 +27,18 @@
     display: flex;
     justify-content: right;
     margin-right: 20px;
+
+    :global {
+      .fa-play-circle {
+        color: rgb(212, 21, 21);
+        size: 2.5em;
+      }
+
+      .fa-stop {
+        color: rgb(212, 21, 21);
+        size: 2.5em;
+      }
+    }
   }
 }
 
@@ -35,14 +47,4 @@
   line-height: 66px;
   margin-right: 10px;
   font-size: 1.5em;
-}
-
-.StopIcon {
-  color: rgb(212, 21, 21);
-  size: 2.5em;
-}
-
-.PlayIcon {
-  color: rgb(56, 156, 56);
-  size: 2.5em;
 }

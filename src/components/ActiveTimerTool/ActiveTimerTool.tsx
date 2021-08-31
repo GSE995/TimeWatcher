@@ -1,19 +1,22 @@
-import React, { Component, FC, useCallback, useEffect, useRef, useState } from 'react';
-import { connect, useDispatch, useSelector } from 'react-redux';
+import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import cn from 'classnames';
 
-import { changeActiveTimer, startTimer, stopTimer } from '../../store/timers/asyncActions';
-import { startTimer as addActiveTimer, stopTimer as removeActiveTimer } from '../../store/timers/actions';
+import { stopTimer } from '../../store/timers/asyncActions';
+import { startTimer as addActiveTimer } from '../../store/timers/actions';
 import { Timer } from '../../models';
 import { tickTime, getDisplayTimerValue } from '../../utils/timer';
 import TimersService from '../../services/TimerServiceFirebase';
 import { getTimerValue } from '../../models/Timer';
+import { Button } from '../Button/Button';
 
 import css from './ActiveTimerTool.module.scss';
+
 interface DisplayTimerProps {
   timer: Timer;
 }
 
-const DisplayTimer: FC<DisplayTimerProps> = ({ timer }) => {
+export const DisplayTimer: FC<DisplayTimerProps> = ({ timer }) => {
   const localTimerValue = useRef(new Date(0));
   const [timerValue, setTimerValue] = useState(new Date(0));
   const [intervalId, setIntervalId] = useState(null);
@@ -130,9 +133,9 @@ export const ActiveTimerTool: FC<ActiveTimerToolProps> = ({ timer }) => {
       </div>
       <div className={css.Actions}>
         <div className={css.TimerValue}>{getDisplayTimerValue(timerValue)}</div>
-        <button onClick={intervalId ? onStop : onStart}>
-          <i className={intervalId ? 'fas fa-stop StopIcon' : 'far fa-play-circle PlayIcon'}></i>
-        </button>
+        <Button onClick={intervalId ? onStop : onStart}>
+          <i className={cn('fas', intervalId ? 'fa-play-circle' : 'fa-stop' )}></i>
+        </Button>
       </div>
     </div>
   );

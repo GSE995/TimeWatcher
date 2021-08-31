@@ -1,7 +1,7 @@
 import { FC } from 'react';
 
-import { MenuItem } from './MenuItem';
 import { Route } from '../../models/Route';
+import { MenuItem } from './MenuItem';
 
 import css from './Menu.module.scss';
 export interface MenuProps {

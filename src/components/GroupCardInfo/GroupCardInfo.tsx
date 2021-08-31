@@ -1,5 +1,6 @@
 import { FC } from 'react';
 import moment from 'moment';
+import { Button } from '../Button/Button';
 
 import css from './GroupCardInfo.module.scss';
 
@@ -15,7 +16,9 @@ export const GroupCardInfo: FC<GroupCardInfoProps> = ({ date, checkedCount, gene
     <div className={css.root}>
       <div className={css.generalDate}>{dateFormat}</div>
       <div className={css.selectedInfo}>Selected items: {checkedCount}</div>
-      <button disabled={!checkedCount}>Delete</button>
+      <Button title="Remove selected timers" className={css.deleteButton} view="clear">
+        Delete
+      </Button>
       <div className={css.spacer}></div>
       <div className={css.generalTime}>{generalTime}</div>
     </div>

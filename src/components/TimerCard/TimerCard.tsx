@@ -5,6 +5,7 @@ import { Timer } from '../../models';
 import { getDisplayTimerValue } from '../../utils/timer';
 import * as asyncActions from '../../store/timers/asyncActions';
 import { getTimerValue } from '../../models/Timer';
+import { Button } from '../Button/Button';
 
 import css from './TimerCard.module.scss';
 
@@ -51,12 +52,12 @@ export const TimerCard: FC<TimerCardProps> = ({ timer, isChecked }) => {
       <input className={css.timerName} value={timerName} onChange={changeTimerName} />
       <div className={css.spacer} />
       <div className={css.timerValue}>{getDisplayTimerValue(getTimerValue(timer))}</div>
-      <button className={css.button} onClick={playHandler}>
+      <Button className={css.button} onClick={playHandler}>
         <i className={`fas fa-play ${css.playIcon}`} />
-      </button>
-      <button className={css.button} onClick={onRemove}>
+      </Button>
+      <Button className={css.button} onClick={onRemove}>
         <i className={`far fa-trash-alt ${css.removeIcon}`} />
-      </button>
+      </Button>
     </div>
   );
 };
