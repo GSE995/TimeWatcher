@@ -1,2 +1,2 @@
 # TimeWatcher
-Application for tracking working time
+Application for tracking work time
