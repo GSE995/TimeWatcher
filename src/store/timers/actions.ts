@@ -2,75 +2,45 @@ import * as t from './actionTypes';
 import Timer from '../../models/Timer';
 import ListResult from '../../models/ListResult';
 
-function timerRequest() {
-  return {
-    type: t.TIMER_LOADING,
-  };
-}
+export const timerRequest = () => ({
+  type: t.TIMER_LOADING,
+});
 
-function timerRequestFailure(error: any) {
-  return {
-    type: t.TIMER_FAILURE_REQUEST,
-    payload: error,
-  };
-}
+export const timerRequestFailure = (error: any) => ({
+  type: t.TIMER_FAILURE_REQUEST,
+  payload: error,
+});
 
-function fetchTimers(listResult: ListResult<Timer>) {
-  return {
-    type: t.FETCH_TIMERS_SUCCESS,
-    payload: listResult,
-  };
-}
+export const setTimers = (listResult: ListResult<Timer>) => ({
+  type: t.FETCH_TIMERS_SUCCESS,
+  payload: listResult,
+});
 
-function addTimer(timer: Timer) {
-  return {
-    type: t.ADD_TIMER,
-    payload: timer,
-  };
-}
+export const addTimer = (timer: Timer) => ({
+  type: t.ADD_TIMER,
+  payload: timer,
+});
 
-function changeTimer(timer: Timer) {
-  return {
-    type: t.CHANGE_TIMER,
-    payload: timer,
-  };
-}
+export const changeTimer = (timer: Timer) => ({
+  type: t.CHANGE_TIMER,
+  payload: timer,
+});
 
-function changeActiveTimer(timer: Timer) {
-  return {
-    type: t.CHANGE_ACTIVE_TIMER,
-    payload: timer,
-  };
-}
+export const changeActiveTimer = (timer: Timer) => ({
+  type: t.CHANGE_ACTIVE_TIMER,
+  payload: timer,
+});
 
-function removeTimer(timerId: string) {
-  return {
-    type: t.REMOVE_TIMER,
-    payload: timerId,
-  };
-}
+export const removeTimer = (timerId: string) => ({
+  type: t.REMOVE_TIMER,
+  payload: timerId,
+});
 
-function startTimer(timer: Timer) {
-  return {
-    type: t.ACTIVATE_TIMER,
-    payload: timer,
-  };
-}
+export const startTimer = (timer: Timer) => ({
+  type: t.ACTIVATE_TIMER,
+  payload: timer,
+});
 
-function stopTimer() {
-  return {
-    type: t.STOP_ACTIVE_TIMER,
-  };
-}
-
-export {
-  timerRequest,
-  timerRequestFailure,
-  fetchTimers,
-  addTimer,
-  changeTimer,
-  changeActiveTimer,
-  removeTimer,
-  startTimer,
-  stopTimer,
-};
+export const stopTimer = () => ({
+  type: t.STOP_ACTIVE_TIMER,
+});

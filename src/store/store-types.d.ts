@@ -5,6 +5,7 @@ type TimerState = {
   errorMsg: string;
   timerIntervalId: NodeJS.Timer | null;
   timerTotal: number;
+  groupedTimer: Map<number, Timer>
 };
 
 type AppState = {

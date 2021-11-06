@@ -26,21 +26,6 @@ export default class Timer {
 
   constructor(public name: string = '') {}
 
-  // public getValue(): Date {
-  //   let start = this.startDate;
-  //   let end = this.endDate || new Date();
-  //   let diff = +end - +start;
-
-  //   return new Date(diff);
-  // }
-
-  // public copy() {
-  //   let copy = new Timer(this.name);
-  //   copy.endDate = this.endDate && new Date(+this.endDate);
-  //   copy.startDate = new Date(this.startDate);
-  //   return copy;
-  // }
-
   static createFrom(dto: TimerDTO) {
     let timer = new Timer();
     timer.startDate = dto.startDate ? moment(dto.startDate).toDate() : new Date();

@@ -22,9 +22,11 @@ export const TimerCard: FC<TimerCardProps> = ({ timer, isChecked }) => {
   const changeTimerName = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       e.stopPropagation();
-
-      setTimerName(e.currentTarget.value);
-      dispatch(asyncActions.changeTimer({ ...timer, name: e.currentTarget.value }));
+      const name = e.target.value;
+      setTimerName(name);
+      setTimeout(() => {
+        dispatch(asyncActions.changeTimer({ ...timer, name }));
+      }, 300);
     },
     [dispatch, timer]
   );
@@ -47,7 +49,7 @@ export const TimerCard: FC<TimerCardProps> = ({ timer, isChecked }) => {
   return (
     <div className={css.root}>
       <div className={css.checkboxWrapper}>
-        <input type="checkbox" checked={checked} onChange={onChecked} name={timer.id} />
+        <input id={timer.id}  type="checkbox" checked={checked} onChange={onChecked} />
       </div>
       <input className={css.timerName} value={timerName} onChange={changeTimerName} />
       <div className={css.spacer} />

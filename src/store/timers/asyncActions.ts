@@ -1,23 +1,23 @@
+import { Dispatch } from 'redux';
+
 import TimerService from '../../services/TimerServiceFirebase';
 import Timer from '../../models/Timer';
-import { Dispatch } from 'redux';
-import * as actions from './actions';
 import PageSize from '../../models/PageSize';
-import ListResult from '../../models/ListResult';
+import * as actions from './actions';
 
-const fetchTimers = (pageSize: PageSize): any => {
+export const fetchTimers = (pageSize: PageSize): any => {
   return async (dispatch: Dispatch) => {
     dispatch(actions.timerRequest());
     try {
       const listResult = await TimerService.getList(pageSize);
-      dispatch(actions.fetchTimers(listResult));
+      dispatch(actions.setTimers(listResult));
     } catch (error) {
       dispatch(actions.timerRequestFailure(error));
     }
   };
 };
 
-const addTimer = (timer: Timer): any => {
+export const addTimer = (timer: Timer): any => {
   return async (dispatch: Dispatch) => {
     dispatch(actions.timerRequest());
     try {
@@ -29,7 +29,7 @@ const addTimer = (timer: Timer): any => {
   };
 };
 
-const changeTimer = (timer: Timer): any => {
+export const changeTimer = (timer: Timer): any => {
   return async (dispatch: Dispatch) => {
     dispatch(actions.timerRequest());
     try {
@@ -41,7 +41,7 @@ const changeTimer = (timer: Timer): any => {
   };
 };
 
-const removeTimer = (id: string): any => {
+export const removeTimer = (id: string): any => {
   return async (dispatch: Dispatch) => {
     dispatch(actions.timerRequest());
     try {
@@ -53,7 +53,7 @@ const removeTimer = (id: string): any => {
   };
 };
 
-const startTimer = (timer: Timer) => {
+export const startTimer = (timer: Timer) => {
   return async (dispatch: Dispatch, getState: GetAppState) => {
     dispatch(actions.timerRequest());
     let timerState = getState().timer;
@@ -75,7 +75,7 @@ const startTimer = (timer: Timer) => {
   };
 };
 
-const changeActiveTimer = (timer: Timer): any => {
+export const changeActiveTimer = (timer: Timer): any => {
   return async (dispatch: Dispatch) => {
     dispatch(actions.timerRequest());
     try {
@@ -87,7 +87,7 @@ const changeActiveTimer = (timer: Timer): any => {
   };
 };
 
-const stopTimer = (timer: Timer): any => {
+export const stopTimer = (timer: Timer): any => {
   return async (dispatch: Dispatch) => {
     dispatch(actions.stopTimer());
     try {
@@ -98,5 +98,3 @@ const stopTimer = (timer: Timer): any => {
     }
   };
 };
-
-export { fetchTimers, addTimer, changeTimer, removeTimer, startTimer, changeActiveTimer, stopTimer };

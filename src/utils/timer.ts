@@ -23,10 +23,6 @@ function isEqualByDate(field: 'startDate' | 'endDate', timerOne: Timer, timerTwo
   );
 }
 
-function isEqualName(TimerOne: Timer, TimerTwo: Timer): boolean {
-  return TimerOne.name === TimerTwo.name;
-}
-
 function groupBy(array: Array<Timer>, isEqual: Function): Array<Timer[]> {
   if (array.length === 0) return [array];
 
@@ -49,8 +45,4 @@ function groupByDate(array: Array<Timer>, field: 'startDate' | 'endDate') {
   return groupBy(array, isEqualByDate.bind({}, field));
 }
 
-function groupByName(array: Array<Timer>, field: 'startDate' | 'endDate') {
-  return groupBy(array, isEqualName);
-}
-
-export { tickTime, getDisplayTimerValue, isEqualByDate, groupByName, groupByDate };
+export { tickTime, getDisplayTimerValue, isEqualByDate, groupByDate };

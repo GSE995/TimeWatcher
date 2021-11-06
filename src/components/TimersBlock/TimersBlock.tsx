@@ -3,7 +3,7 @@ import React, { useState, useRef, FC, useCallback } from 'react';
 import { Timer } from '../../models';
 import { TimerCard } from '../TimerCard/TimerCard';
 import { getDisplayTimerValue } from '../../utils/timer';
-import { GroupCardInfo } from '../GroupCardInfo/GroupCardInfo';
+import { GeneralCardInfo } from '../GeneralCardInfo/GeneralCardInfo';
 import { getTimerValue } from '../../models/Timer';
 
 import css from './TimersBlock.module.scss';
@@ -11,10 +11,12 @@ import css from './TimersBlock.module.scss';
 const initialState = {
   checked: false,
   checkedCount: 0,
+  checkedTimers: {},
 };
 
 export interface TimersBlockState {
   checked: boolean;
+  checkedTimers: Record<string, boolean>;
   checkedCount: number;
 }
 
@@ -32,27 +34,19 @@ export const TimersBlock: FC<TimersBlockProps> = ({ timers }) => {
     e.stopPropagation();
 
     if (e.target.checked) {
-      checkedTimers.current[e.target.name] = true;
+      checkedTimers.current[e.target.id] = true;
     } else {
-      delete checkedTimers.current[e.target.name];
-    }
-
-    let checkedCount = Object.keys(checkedTimers.current).length;
-    if (checkedCount) {
-      setState({ checked: true, checkedCount });
-    } else {
-      setState(initialState);
+      delete checkedTimers.current[e.target.id];
     }
   }, []);
 
   const onCheckChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       if (e.currentTarget.checked) {
-        for (let timer of timers) {
-          checkedTimers.current[timer.id] = true;
-        }
+        const checkedTimers = {};
         setState({
           checked: true,
+          checkedTimers: checkedTimers,
           checkedCount: timers.length,
         });
       } else {
@@ -66,10 +60,8 @@ export const TimersBlock: FC<TimersBlockProps> = ({ timers }) => {
   return (
     <div className={css.root}>
       <div style={{ display: 'flex' }}>
-        <div>
-          <input type="checkbox" checked={state.checked} onChange={onCheckChange} />
-        </div>
-        <GroupCardInfo generalTime={generalTime} date={timers[0].startDate!} checkedCount={state.checkedCount} />
+        <input type="checkbox" checked={state.checked} onChange={onCheckChange} />
+        <GeneralCardInfo generalTime={generalTime} date={timers[0].startDate!} checkedCount={state.checkedCount} />
       </div>
       <div onChange={onCheckTimer}>
         {timers.map((el: Timer) => (

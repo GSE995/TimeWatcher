@@ -1,10 +1,7 @@
-import axios from 'axios';
-import Timer, { TimerDTO } from '../models/Timer';
-import { Result, SuccessResult, ErrorResult } from '../models/Result';
+import Timer from '../models/Timer';
 import ListResult from '../models/ListResult';
 import PageSize from '../models/PageSize';
 import firebase from '../config/firebase';
-import moment from 'moment';
 
 const db = firebase.firestore();
 const collection = db.collection('timers');

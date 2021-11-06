@@ -11,6 +11,7 @@ const initialState = {
   isLoading: false,
   errorMsg: '',
   timers: [],
+  groupedTimer: new Map(),
   timerIntervalId: null,
   timerTotal: 0,
   activeTimer: null,
@@ -34,12 +35,9 @@ const reducer: Reducer<TimerState, TimerAction> = (state = initialState, { type,
         timers: [payload, ...state.timers],
       };
     case t.CHANGE_TIMER:
-      return {
-        ...state,
-        timers: state.timers.map(timer => {
-          return timer.id === payload.id ? payload : timer;
-        }),
-      };
+      const index = state.timers.findIndex(t => t.id === payload.id);
+      state.timers[index] = payload;
+      return { ...state };
     case t.REMOVE_TIMER:
       return {
         ...state,
