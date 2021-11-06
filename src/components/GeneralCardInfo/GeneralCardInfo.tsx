@@ -2,15 +2,15 @@ import { FC } from 'react';
 import moment from 'moment';
 import { Button } from '../Button/Button';
 
-import css from './GroupCardInfo.module.scss';
+import css from './GeneralCardInfo.module.scss';
 
-export interface GroupCardInfoProps {
+export interface GeneralCardInfoProps {
   generalTime: string;
   date: Date;
   checkedCount: number;
 }
 
-export const GroupCardInfo: FC<GroupCardInfoProps> = ({ date, checkedCount, generalTime }) => {
+export const GeneralCardInfo: FC<GeneralCardInfoProps> = ({ date, checkedCount, generalTime }) => {
   let dateFormat = moment(date).format('YYYY/MM/DD');
   return (
     <div className={css.root}>
