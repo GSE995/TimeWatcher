@@ -2,7 +2,7 @@ import { Switch, Route } from 'react-router-dom';
 
 import { Menu } from './components/Menu/Menu';
 import routes from './routes';
-import { ErrorBoundary } from './common/ErrorBoundary';
+import { ErrorBoundary } from './components';
 
 import css from './App.module.scss';
 

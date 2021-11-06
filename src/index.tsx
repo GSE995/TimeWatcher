@@ -4,7 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 
 import store from './store';
 import { App } from './App';
-import { ErrorBoundary } from './common/ErrorBoundary';
+import { ErrorBoundary } from './components';
 
 import './index.css';
 
