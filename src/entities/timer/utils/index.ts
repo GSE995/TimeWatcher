@@ -1,6 +1,6 @@
 import { Timer } from '../types';
 
-export const getTimerValue = ({ startDate, endDate }: Timer) => {
+export function getTimerValue({ startDate, endDate }: Timer) {
   let end = endDate || new Date();
   if (!startDate) {
     // eslint-disable-next-line no-throw-literal
@@ -9,4 +9,17 @@ export const getTimerValue = ({ startDate, endDate }: Timer) => {
   let diff = +end - +startDate;
 
   return new Date(diff);
-};
+}
+
+const pad = (val: number) => (val >= 10 ? val : '0' + val);
+
+export function getDisplayTimerValue(value: Date): string {
+  let milliseconds = +value / 1000;
+  let hours = Math.floor(milliseconds / 3600);
+  let minutes = Math.floor((milliseconds / 60) % 60);
+  let seconds = Math.floor(milliseconds % 60);
+
+  return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+}
+
+export const tickTime = (value: Date) => new Date(+value + 1000);
