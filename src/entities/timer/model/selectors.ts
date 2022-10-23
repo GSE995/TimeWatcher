@@ -1,0 +1,1 @@
+export const selectActiveTimer = (state: AppState) => state.timer.activeTimer;
