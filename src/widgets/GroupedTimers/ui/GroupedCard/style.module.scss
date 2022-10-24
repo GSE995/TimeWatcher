@@ -1,0 +1,22 @@
+.root {
+  box-shadow: rgba(0, 0, 0, 0.13) 0px 2px 6px 0px;
+  padding: 10px 0;
+  margin-bottom: 20px;
+
+  .timerCard {
+    display: flex;
+  }
+
+  .timerCard:hover {
+    background-color: rgb(248, 247, 247);
+
+    .timerName {
+      background-color: rgb(248, 247, 247);
+    }
+  }
+
+  .generalInfo {
+    display: flex;
+    padding: 10px 0;
+  }
+}

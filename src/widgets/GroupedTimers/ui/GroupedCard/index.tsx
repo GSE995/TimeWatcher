@@ -1,9 +1,8 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useState } from 'react';
+import cn from 'classnames';
 
-import { PlayTimerButton, DeleteTimerButton } from 'features/timer/ui';
-import { TimerCard } from 'entities/timer/ui';
-import { getGeneralTime } from '../../utils';
 import { GeneralCardInfo } from '../GeneralCardInfo';
+import { TimerCard } from 'widgets/TimerCard';
 import type { Timer } from 'entities/timer/types';
 
 import css from './style.module.scss';
@@ -22,35 +21,38 @@ const initialState = {
 
 export type GroupedCardProps = {
   timers: Timer[];
+  className?: string;
 };
 
-export const GroupedCard = ({ timers }: GroupedCardProps) => {
-  let [state, setState] = useState<TimersBlockState>(initialState);
-  let checkedTimers = useRef<any>({});
+export const GroupedCard = ({ timers, className }: GroupedCardProps) => {
+  const [state, setState] = useState<TimersBlockState>(initialState);
 
-  let generalTime = getGeneralTime(timers);
+  const onCheckTimer = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      e.stopPropagation();
 
-  const onCheckTimer = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    e.stopPropagation();
+      const checkedTimers = { ...state.checkedTimers, [e.target.id]: e.target.checked };
+      const checkedCount = e.target.checked ? state.checkedCount + 1 : state.checkedCount - 1;
+      const checked = checkedCount === timers.length ? true : false;
 
-    if (e.target.checked) {
-      checkedTimers.current[e.target.id] = true;
-    } else {
-      delete checkedTimers.current[e.target.id];
-    }
-  }, []);
+      setState({
+        checked,
+        checkedTimers,
+        checkedCount,
+      });
+    },
+    [state.checkedCount, state.checkedTimers, timers.length]
+  );
 
   const onCheckChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       if (e.currentTarget.checked) {
-        const checkedTimers = {};
         setState({
           checked: true,
-          checkedTimers: checkedTimers,
+          checkedTimers: Object.fromEntries(timers.map(timer => [timer.id, true])),
           checkedCount: timers.length,
         });
       } else {
-        checkedTimers.current = {};
         setState(initialState);
       }
     },
@@ -58,34 +60,22 @@ export const GroupedCard = ({ timers }: GroupedCardProps) => {
   );
 
   return (
-    <div className={css.root}>
-      <div style={{ display: 'flex' }}>
+    <div className={cn(css.root, className)}>
+      <div className={css.generalInfo}>
         <input type="checkbox" checked={state.checked} onChange={onCheckChange} />
-        <GeneralCardInfo generalTime={generalTime} date={timers[0].startDate!} checkedCount={state.checkedCount} />
+        <GeneralCardInfo timers={timers} />
       </div>
       <div>
         {timers.map(timer => (
-          <TimerCard
-            timer={timer}
-            key={timer.id}
-            isChecked={Boolean(checkedTimers.current[timer.id])}
-            actionBefore={
-              <div className={css.checkboxWrapper}>
-                <input
-                  id={timer.id}
-                  type="checkbox"
-                  checked={checkedTimers.current[timer.id]}
-                  onChange={onCheckTimer}
-                />
-              </div>
-            }
-            actionAfter={
-              <div>
-                <PlayTimerButton timer={timer} />
-                <DeleteTimerButton timer={timer} />
-              </div>
-            }
-          />
+          <div className={css.timerCard} key={timer.id}>
+            <input
+              id={timer.id}
+              type="checkbox"
+              checked={Boolean(state.checkedTimers[timer.id])}
+              onChange={onCheckTimer}
+            />
+            <TimerCard timer={timer} key={timer.id} />
+          </div>
         ))}
       </div>
     </div>

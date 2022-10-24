@@ -1,25 +1,22 @@
 import { FC } from 'react';
-import { Button } from 'components/Button/Button';
+
 import { getGroupeValue } from '../../utils/getGroupeValue';
+import { Timer } from 'entities/timer/types';
+import { getGeneralTime } from 'widgets/GroupedTimers/utils';
 
 import css from './style.module.scss';
-
 export interface GeneralCardInfoProps {
-  generalTime: string;
-  date: Date;
-  checkedCount: number;
+  timers: Timer[];
 }
 
-export const GeneralCardInfo: FC<GeneralCardInfoProps> = ({ date, checkedCount, generalTime }) => {
-  let dateFormat = getGroupeValue(date);
+export const GeneralCardInfo: FC<GeneralCardInfoProps> = ({ timers }) => {
+  const date = timers[0].startDate!;
+  const dateFormat = getGroupeValue(date);
+  const generalTime = getGeneralTime(timers);
 
   return (
     <div className={css.root}>
       <div className={css.generalDate}>{dateFormat}</div>
-      <div className={css.selectedInfo}>Selected items: {checkedCount}</div>
-      <Button title="Remove selected timers" className={css.deleteButton} view="clear">
-        Delete
-      </Button>
       <div className={css.spacer}></div>
       <div className={css.generalTime}>{generalTime}</div>
     </div>
