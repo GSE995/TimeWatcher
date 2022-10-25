@@ -1,8 +1,7 @@
 import ListResult from 'shared/types/ListResult';
 import PageSize from 'shared/types/PageSize';
 import firebase from 'shared/config/firebase';
-import { convertTimer } from '../utils';
-import type { CreateTimerDto, Timer, TimerDto } from '../types';
+import type { CreateTimerDto, FirebaseTimerType, Timer } from '../types';
 
 const db = firebase.firestore();
 const collection = db.collection('timers');
@@ -14,9 +13,9 @@ export { API_ROOT_URL };
 export default class TimersService {
   static async get(id: number): Promise<Timer> {
     const doc = await collection.doc(id.toString()).get();
-    const timerDto = doc.data() as TimerDto;
+    const timerDto = doc.data() as FirebaseTimerType;
 
-    return convertTimer({ ...timerDto, id: doc.id });
+    return convertTimer(doc.id, timerDto);
   }
 
   static async create(timer: CreateTimerDto): Promise<Timer> {
@@ -26,12 +25,9 @@ export default class TimersService {
     });
 
     const doc = await docRef.get();
-    const data = doc.data() as TimerDto;
+    const data = doc.data() as FirebaseTimerType;
 
-    return convertTimer({
-      ...data,
-      id: doc.id,
-    });
+    return convertTimer(doc.id, data);
   }
 
   static async save(timer: Timer): Promise<Timer> {
@@ -54,10 +50,19 @@ export default class TimersService {
     let timers: Timer[] = [];
 
     querySnapshot.forEach(doc => {
-      let timerDto = doc.data() as TimerDto;
-      timers.push(convertTimer({ ...timerDto, id: doc.id }));
+      let timerDto = doc.data() as FirebaseTimerType;
+      timers.push(convertTimer(doc.id, timerDto));
     });
 
     return new ListResult<Timer>(timers, 1, pageSize);
   }
+}
+
+function convertTimer(id: string, timerDto: FirebaseTimerType) {
+  return {
+    id,
+    startDate: new Date(timerDto.startDate.seconds * 1000),
+    endDate: timerDto.endDate && new Date(timerDto.endDate.seconds * 1000),
+    name: timerDto.name || '',
+  };
 }

@@ -5,6 +5,16 @@ export interface Timer {
   endDate?: Date;
 }
 
+export type FirebaseDate = {
+  nanoseconds: number;
+  seconds: number;
+};
+export interface FirebaseTimerType {
+  startDate: FirebaseDate;
+  endDate?: FirebaseDate;
+  name?: string;
+}
+
 export interface TimerDto {
   id: string;
   name: string;
