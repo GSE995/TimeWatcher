@@ -1,6 +1,7 @@
-import { Timer } from '../types';
+import moment from 'moment';
+import { Timer, TimerDto } from '../types';
 
-export function getTimerValue({ startDate, endDate }: Timer) {
+export function getTimerValue(startDate: Date, endDate?: Date) {
   let end = endDate || new Date();
   if (!startDate) {
     // eslint-disable-next-line no-throw-literal
@@ -23,3 +24,12 @@ export function getDisplayTimerValue(value: Date): string {
 }
 
 export const tickTime = (value: Date) => new Date(+value + 1000);
+
+export function convertTimer(dto: TimerDto): Timer {
+  return {
+    id: dto.id,
+    name: dto.name,
+    startDate: dto.startDate ? moment(dto.startDate).toDate() : new Date(),
+    endDate: dto.endDate ? moment(dto.endDate).toDate() : undefined,
+  };
+}

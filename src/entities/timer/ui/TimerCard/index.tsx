@@ -1,8 +1,7 @@
 import type { ReactNode, FC } from 'react';
 
-import { Timer } from 'models';
-import { getDisplayTimerValue } from 'utils/timer';
-import { getTimerValue } from 'models/Timer';
+import { getDisplayTimerValue, getTimerValue } from 'entities/timer/utils';
+import type { Timer } from 'entities/timer/types';
 
 import css from './style.module.scss';
 
@@ -20,7 +19,7 @@ export const TimerCard: FC<TimerCardProps> = ({ timer, actionBefore, actionAfter
       {actionBefore}
       <input className={css.timerName} value={timer.name} onChange={changeTimerName} />
       <div className={css.spacer} />
-      <div className={css.timerValue}>{getDisplayTimerValue(getTimerValue(timer))}</div>
+      <div className={css.timerValue}>{getDisplayTimerValue(getTimerValue(timer.startDate, timer.endDate))}</div>
       <div>{actionAfter}</div>
     </div>
   );

@@ -1,8 +1,8 @@
 import { useDispatch } from 'react-redux';
 
-import { Timer } from 'models';
-import { Button } from 'components/Button/Button';
+import { Button } from 'shared/components/Button/Button';
 import * as asyncActions from 'entities/timer/model/asyncActions';
+import type { Timer } from 'entities/timer/types';
 
 import css from './style.module.scss';
 

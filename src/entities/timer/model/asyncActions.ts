@@ -1,7 +1,8 @@
 import { Dispatch } from 'redux';
-import { PageSize, Timer } from 'models';
-import TimerService from 'services/TimerServiceFirebase';
+import PageSize from 'shared/types/PageSize';
+import TimerService from '../api/TimerServiceFirebase';
 import * as actions from './actions';
+import { CreateTimerDto, Timer, TimerState, UpdateTimerDto } from '../types';
 
 export const fetchTimers = (pageSize: PageSize): any => {
   return async (dispatch: Dispatch) => {
@@ -51,8 +52,8 @@ export const removeTimer = (id: string): any => {
   };
 };
 
-export const startTimer = (timer: Timer) => {
-  return async (dispatch: Dispatch, getState: GetAppState) => {
+export const startTimer = (timer: CreateTimerDto) => {
+  return async (dispatch: Dispatch, getState: () => { timer: TimerState }) => {
     dispatch(actions.timerRequest());
     let timerState = getState().timer;
     try {
@@ -63,9 +64,7 @@ export const startTimer = (timer: Timer) => {
         dispatch(actions.addTimer(activeTimerResult));
       }
 
-      console.log(timer);
       const result = await TimerService.create(timer);
-      console.log(result);
       dispatch(actions.startTimer(result));
     } catch (error) {
       dispatch(actions.timerRequestFailure(error));
@@ -85,11 +84,11 @@ export const changeActiveTimer = (timer: Timer): any => {
   };
 };
 
-export const stopTimer = (timer: Timer): any => {
+export const stopTimer = (timer: UpdateTimerDto): any => {
   return async (dispatch: Dispatch) => {
     dispatch(actions.stopTimer());
     try {
-      let result = await TimerService.save(timer);
+      let result = await TimerService.save(timer as any);
       dispatch(actions.addTimer(result));
     } catch (error) {
       dispatch(actions.timerRequestFailure(error));

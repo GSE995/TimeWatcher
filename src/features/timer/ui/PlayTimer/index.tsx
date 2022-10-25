@@ -1,14 +1,14 @@
 import { useDispatch } from 'react-redux';
 import cn from 'classnames';
 
-import { Button } from 'components/Button/Button';
-import { Timer } from 'models';
+import { Button } from 'shared/components/Button/Button';
 import * as asyncActions from 'entities/timer/model/asyncActions';
+import type { CreateTimerDto } from 'entities/timer/types';
 
 import css from './style.module.scss';
 
 export type PlayTimerButtonProps = {
-  timer: Timer;
+  timer: CreateTimerDto;
   className?: string;
 };
 
@@ -16,7 +16,7 @@ export const PlayTimerButton = ({ timer, className }: PlayTimerButtonProps) => {
   let dispatch = useDispatch();
 
   const playHandler = () => {
-    let newTimer: Timer = { id: '', name: timer.name, startDate: new Date() };
+    let newTimer: CreateTimerDto = { name: timer.name, startDate: new Date() };
     dispatch(asyncActions.startTimer(newTimer));
   };
 

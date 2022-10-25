@@ -1,5 +1,6 @@
-import { Timer } from 'models';
 import { useCallback } from 'react';
+
+import { Timer } from 'entities/timer/types';
 
 export type CheckTimerProps = {
   timer: Timer;

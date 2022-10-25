@@ -1,6 +1,6 @@
 import * as t from './actionTypes';
-import Timer from 'models/Timer';
-import ListResult from 'models/ListResult';
+import ListResult from 'shared/types/ListResult';
+import { Timer } from '../types';
 
 export const timerRequest = () => ({
   type: t.TIMER_LOADING,

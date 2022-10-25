@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { PageSize, Timer } from '../../../models';
+import PageSize from 'shared/types/PageSize';
+import { Timer } from '../types';
 import { fetchTimers } from './asyncActions';
 
 export const useTimers = (pageSize: PageSize): Timer[] => {

@@ -1,6 +1,6 @@
 import { Reducer } from 'redux';
+import { Timer, TimerState } from '../types';
 
-import { Timer } from 'models';
 import * as t from './actionTypes';
 
 type TimerAction = {

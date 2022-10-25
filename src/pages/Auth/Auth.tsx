@@ -1,9 +1,9 @@
 import { useReducer, FC } from 'react';
 import { Redirect } from 'react-router-dom';
 
-import AuthService from '../../services/AuthService';
+import AuthService from '../../entities/user/api/AuthService';
 import AuthReducer from './reducer';
-import User from '../../models/User';
+import User from 'entities/user/types';
 
 import css from './Auth.module.scss';
 
