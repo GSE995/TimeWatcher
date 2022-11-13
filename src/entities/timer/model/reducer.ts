@@ -15,7 +15,7 @@ const initialState = {
   groupedTimer: new Map(),
   timerIntervalId: null,
   timerTotal: 0,
-  activeTimer: null,
+  activeTimer: {},
 };
 
 export { initialState };
@@ -27,7 +27,7 @@ const reducer: Reducer<TimerState, TimerAction> = (state = initialState, { type,
         ...state,
         isLoading: false,
         timers: payload.data.filter((el: Timer) => el.endDate),
-        activeTimer: payload.data.filter((el: Timer) => !el.endDate)[0] || null,
+        activeTimer: payload.data.filter((el: Timer) => !el.endDate)[0] || {},
         timerTotal: payload.total,
       };
     case t.ADD_TIMER:
@@ -63,9 +63,14 @@ const reducer: Reducer<TimerState, TimerAction> = (state = initialState, { type,
     case t.STOP_ACTIVE_TIMER:
       return {
         ...state,
-        activeTimer: null,
+        activeTimer: {},
       };
     case t.CHANGE_ACTIVE_TIMER:
+      return {
+        ...state,
+        activeTimer: payload,
+      };
+    case t.UPDATE_ACTIVE_TIMER:
       return {
         ...state,
         activeTimer: payload,

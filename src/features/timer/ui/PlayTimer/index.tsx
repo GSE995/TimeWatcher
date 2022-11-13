@@ -16,8 +16,7 @@ export const PlayTimerButton = ({ timer, className }: PlayTimerButtonProps) => {
   let dispatch = useDispatch();
 
   const playHandler = () => {
-    let newTimer: CreateTimerDto = { name: timer.name, startDate: new Date() };
-    dispatch(asyncActions.startTimer(newTimer));
+    dispatch(asyncActions.startTimer({ name: timer.name, startDate: new Date() }));
   };
 
   return (

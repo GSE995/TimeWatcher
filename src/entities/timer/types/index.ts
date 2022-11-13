@@ -36,7 +36,7 @@ export interface UpdateTimerDto {
 
 export type TimerState = {
   timers: Timer[];
-  activeTimer: Timer | null;
+  activeTimer: Partial<Timer>;
   isLoading: boolean;
   errorMsg: string;
   timerIntervalId: NodeJS.Timer | null;

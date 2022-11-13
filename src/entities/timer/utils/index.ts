@@ -2,7 +2,7 @@ import moment from 'moment';
 import { Timer, TimerDto } from '../types';
 
 export function getTimerValue(startDate: Date, endDate?: Date) {
-  let end = endDate || new Date();
+  const end = endDate || new Date();
   if (!startDate) {
     // eslint-disable-next-line no-throw-literal
     throw `Timer hasn't start date`;

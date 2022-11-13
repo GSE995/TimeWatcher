@@ -1,6 +1,6 @@
 import * as t from './actionTypes';
 import ListResult from 'shared/types/ListResult';
-import { Timer } from '../types';
+import { CreateTimerDto, Timer } from '../types';
 
 export const timerRequest = () => ({
   type: t.TIMER_LOADING,
@@ -26,7 +26,7 @@ export const changeTimer = (timer: Timer) => ({
   payload: timer,
 });
 
-export const changeActiveTimer = (timer: Timer) => ({
+export const changeActiveTimer = (timer: Partial<Timer>) => ({
   type: t.CHANGE_ACTIVE_TIMER,
   payload: timer,
 });
@@ -36,7 +36,7 @@ export const removeTimer = (timerId: string) => ({
   payload: timerId,
 });
 
-export const startTimer = (timer: Timer) => ({
+export const startTimer = (timer: Timer | CreateTimerDto) => ({
   type: t.ACTIVATE_TIMER,
   payload: timer,
 });

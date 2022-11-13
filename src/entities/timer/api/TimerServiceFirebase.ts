@@ -20,7 +20,8 @@ export default class TimersService {
 
   static async create(timer: CreateTimerDto): Promise<Timer> {
     const docRef = await collection.add({
-      name: timer.name,
+      name: timer.name || '',
+      endDate: null,
       startDate: timer.startDate,
     });
 

@@ -16,7 +16,7 @@ export const fetchTimers = (pageSize: PageSize): any => {
   };
 };
 
-export const addTimer = (timer: Timer): any => {
+export const addTimer = (timer: CreateTimerDto): any => {
   return async (dispatch: Dispatch) => {
     dispatch(actions.timerRequest());
     try {
@@ -52,46 +52,50 @@ export const removeTimer = (id: string): any => {
   };
 };
 
-export const startTimer = (timer: CreateTimerDto) => {
+export const startTimer = (timer: Partial<CreateTimerDto>) => {
   return async (dispatch: Dispatch, getState: () => { timer: TimerState }) => {
-    dispatch(actions.timerRequest());
-    let timerState = getState().timer;
-    try {
-      if (timerState.activeTimer) {
-        let activeTimer: Timer = timerState.activeTimer;
-        activeTimer.endDate = new Date();
-        const activeTimerResult = await TimerService.save(activeTimer);
+    const timerState = getState().timer;
+
+    if (timerState.activeTimer) {
+      const lastActiveTimer = { ...timerState.activeTimer, endDate: new Date() };
+      TimerService.save(lastActiveTimer as any).then(activeTimerResult => {
         dispatch(actions.addTimer(activeTimerResult));
-      }
-
-      const result = await TimerService.create(timer);
-      dispatch(actions.startTimer(result));
-    } catch (error) {
-      dispatch(actions.timerRequestFailure(error));
+      });
     }
+
+    const newActiveTimer = { ...timer, startDate: new Date() };
+    dispatch(actions.startTimer(newActiveTimer));
+
+    const result = await TimerService.create(newActiveTimer);
+    dispatch(actions.changeActiveTimer(result));
   };
 };
 
-export const changeActiveTimer = (timer: Timer): any => {
-  return async (dispatch: Dispatch) => {
-    dispatch(actions.timerRequest());
-    try {
-      let result = await TimerService.save(timer);
-      dispatch(actions.changeActiveTimer(result));
-    } catch (error) {
-      dispatch(actions.timerRequestFailure(error));
-    }
-  };
-};
-
-export const stopTimer = (timer: UpdateTimerDto): any => {
+export const stopTimer = (timer: Partial<CreateTimerDto>): any => {
   return async (dispatch: Dispatch) => {
     dispatch(actions.stopTimer());
     try {
-      let result = await TimerService.save(timer as any);
+      let result = await TimerService.save({ ...timer, endDate: new Date() } as any);
       dispatch(actions.addTimer(result));
+      dispatch(actions.changeActiveTimer({}));
     } catch (error) {
       dispatch(actions.timerRequestFailure(error));
+    }
+  };
+};
+
+export const changeActiveTimer = (timer: Partial<UpdateTimerDto>): any => {
+  return async (dispatch: Dispatch) => {
+    if (timer.startDate) {
+      dispatch(actions.timerRequest());
+      try {
+        let result = await TimerService.save(timer as any);
+        dispatch(actions.changeActiveTimer(result));
+      } catch (error) {
+        dispatch(actions.timerRequestFailure(error));
+      }
+    } else {
+      dispatch(actions.changeActiveTimer(timer));
     }
   };
 };
