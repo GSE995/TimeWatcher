@@ -47,11 +47,11 @@ export default class TimersService {
     const timerQuery = query(timerCollection, orderBy('endDate', 'desc'));
 
     const querySnapshot = await getDocs(timerQuery);
-    let timers: Timer[] = [];
+    const timers: Timer[] = [];
 
-    querySnapshot.forEach(doc => {
-      let timerDto = doc.data() as FirebaseTimerType;
-      timers.push(convertTimer(doc.id, timerDto));
+    querySnapshot.forEach(queryDoc => {
+      const timerDto = queryDoc.data() as FirebaseTimerType;
+      timers.push(convertTimer(queryDoc.id, timerDto));
     });
 
     return new ListResult<Timer>(timers, 1, pageSize);
