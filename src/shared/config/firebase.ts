@@ -1,4 +1,6 @@
-import firebase from 'firebase';
+import { initializeApp } from 'firebase/app';
+import { getFirestore } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
 
 export const firebaseConfig = {
   apiKey: 'AIzaSyAtllEZr0-xR5GubUBQEmF_0hSFwPVxJ0E',
@@ -9,4 +11,6 @@ export const firebaseConfig = {
   messagingSenderId: '803168283340',
 };
 
-export default firebase.initializeApp(firebaseConfig);
+export const firebaseApp = initializeApp(firebaseConfig);
+export const firebaseDB = getFirestore(firebaseApp);
+export const auth = getAuth(firebaseApp);

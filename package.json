@@ -11,9 +11,6 @@
     "eject": "react-scripts eject",
     "storybook": "start-storybook"
   },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
   "browserslist": [
     ">0.2%",
     "not dead",
@@ -23,17 +20,15 @@
   "dependencies": {
     "axios": "0.21.1",
     "classnames": "^2.3.1",
-    "firebase": "^8.3.3",
+    "firebase": "9.14.0",
     "moment": "2.29.1",
-    "node-sass": "7.0.3",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-redux": "7.2.3",
     "react-router-dom": "5.2.0",
-    "react-scripts": "4.0.3",
+    "react-scripts": "5.0.1",
     "redux": "4.0.5",
-    "redux-thunk": "2.3.0",
-    "sass-loader": "13.1.0"
+    "redux-thunk": "2.3.0"
   },
   "devDependencies": {
     "@storybook/react": "6.2.7",
@@ -46,15 +41,16 @@
     "@types/react-redux": "7.1.16",
     "@types/react-router-dom": "5.1.7",
     "@types/redux-mock-store": "1.0.2",
-    "@babel/plugin-proposal-optional-chaining": "7.13.12",
-    "babel-loader": "8.1.0",
     "axios-mock-adapter": "1.19.0",
-    "customize-cra": "1.0.0",
-    "eslint": "7.24.0",
-    "react-app-rewired": "2.1.8",
+    "eslint": "8.27.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-jsx-a11y": "^6.6.1",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "^2.7.1",
     "redux-mock-store": "1.5.4",
+    "sass": "^1.56.1",
     "typescript": "4.2.4",
-    "prettier": "2.2.1",
-    "webpack": "4.44.2"
+    "webpack": "5.0.0"
   }
 }

@@ -1,10 +1,9 @@
+import { collection, query, doc, getDocs, getDoc, addDoc, updateDoc, deleteDoc, orderBy } from 'firebase/firestore';
+
 import ListResult from 'shared/types/ListResult';
 import PageSize from 'shared/types/PageSize';
-import firebase from 'shared/config/firebase';
+import { firebaseDB } from 'shared/config/firebase';
 import type { CreateTimerDto, FirebaseTimerType, Timer } from '../types';
-
-const db = firebase.firestore();
-const collection = db.collection('timers');
 
 const API_ROOT_URL = '/api/timer';
 export { API_ROOT_URL };
@@ -12,27 +11,24 @@ export { API_ROOT_URL };
 // service for work with firebase
 export default class TimersService {
   static async get(id: number): Promise<Timer> {
-    const doc = await collection.doc(id.toString()).get();
-    const timerDto = doc.data() as FirebaseTimerType;
+    const docRef = doc(firebaseDB, 'timers', id.toString());
 
-    return convertTimer(doc.id, timerDto);
+    const docData = await getDoc(docRef);
+    const timerDto = docData.data() as FirebaseTimerType;
+
+    return convertTimer(id.toString(), timerDto);
   }
 
   static async create(timer: CreateTimerDto): Promise<Timer> {
-    const docRef = await collection.add({
-      name: timer.name || '',
-      endDate: null,
-      startDate: timer.startDate,
-    });
+    const timerCollection = collection(firebaseDB, 'timers');
+    const docRef = await addDoc(timerCollection, timer);
 
-    const doc = await docRef.get();
-    const data = doc.data() as FirebaseTimerType;
-
-    return convertTimer(doc.id, data);
+    return { ...timer, id: docRef.id } as Timer;
   }
 
   static async save(timer: Timer): Promise<Timer> {
-    await collection.doc(timer.id).update({
+    const docRef = doc(firebaseDB, 'timers', timer.id);
+    await updateDoc(docRef, {
       name: timer.name,
       endDate: timer.endDate || null,
       startDate: timer.startDate,
@@ -42,12 +38,15 @@ export default class TimersService {
   }
 
   static async remove(id: string): Promise<Boolean> {
-    await collection.doc(id).delete();
+    await deleteDoc(doc(firebaseDB, 'timers', id));
     return true;
   }
 
   static async getList(pageSize: PageSize): Promise<ListResult<Timer>> {
-    let querySnapshot = await collection.orderBy('endDate', 'desc').get();
+    const timerCollection = collection(firebaseDB, 'timers');
+    const timerQuery = query(timerCollection, orderBy('endDate', 'desc'));
+
+    const querySnapshot = await getDocs(timerQuery);
     let timers: Timer[] = [];
 
     querySnapshot.forEach(doc => {

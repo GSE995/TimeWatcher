@@ -1,13 +1,15 @@
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+
 import User from 'entities/user/types';
-import firebase from 'shared/config/firebase';
-import { Result, SuccessResult, ErrorResult } from 'shared/types/Result';
+import { auth } from 'shared/config/firebase';
+import { SuccessResult, ErrorResult } from 'shared/types/Result';
 
 const API_URL = '';
 
 export default class AuthService {
   static async signUp(credential: any | null) {
     try {
-      let result = await firebase.auth().createUserWithEmailAndPassword(credential.email, credential.password);
+      let result = await createUserWithEmailAndPassword(auth, credential.email, credential.password);
 
       let user = new User(result.user?.email);
       user.id = result.user?.uid;
@@ -20,7 +22,7 @@ export default class AuthService {
 
   static async signIn({ email, password }: any) {
     try {
-      let result = await firebase.auth().signInWithEmailAndPassword(email, password);
+      let result = await signInWithEmailAndPassword(auth, email, password);
 
       let user = new User(result.user?.email);
       user.id = result.user?.uid;
